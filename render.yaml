@@ -1,0 +1,91 @@
+services:
+  # 1. Auth Service
+  - type: web
+    name: auth-service
+    env: node
+    rootDir: auth-service
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+
+  # 2. Patient Service
+  - type: web
+    name: patient-service
+    env: node
+    rootDir: patient-service
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+
+  # 3. Doctor Service
+  - type: web
+    name: doctor-service
+    env: node
+    rootDir: doctor-service
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+
+  # 4. Appointment Service
+  - type: web
+    name: appointment-service
+    env: node
+    rootDir: appointment-service
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+
+  # 5. API Gateway (Entry Point)
+  - type: web
+    name: api-gateway
+    env: node
+    rootDir: api-gateway
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: AUTH_SERVICE_URL
+        fromService:
+          type: web
+          name: auth-service
+          property: host
+      - key: PATIENT_SERVICE_URL
+        fromService:
+          type: web
+          name: patient-service
+          property: host
+      - key: DOCTOR_SERVICE_URL
+        fromService:
+          type: web
+          name: doctor-service
+          property: host
+      - key: APPOINTMENT_SERVICE_URL
+        fromService:
+          type: web
+          name: appointment-service
+          property: host
