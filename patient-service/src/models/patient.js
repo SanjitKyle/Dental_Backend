@@ -43,7 +43,7 @@ const Patient = mongoose.Schema({
         type:String
     },
     emergency_contact_name:{
-        type:string
+        type:String
     },
     emergencty_contact_phone:{
         type:Number
@@ -58,4 +58,4 @@ const Patient = mongoose.Schema({
 
 },{ timestamps: true })
 
-export const patient=mongoose.model('patient',Patient);
+export default mongoose.model('Patient', Patient);
