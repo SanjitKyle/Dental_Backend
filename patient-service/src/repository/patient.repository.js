@@ -1,4 +1,4 @@
-import Patient from '../models/Patient.js'; // Assuming Patient is exported as default from the model file
+import Patient from '../models/patient.js'; // Assuming Patient is exported as default from the model file
 
 export const createPatient = async (patientData) => {
     const patient = new Patient(patientData);
