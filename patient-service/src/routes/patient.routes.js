@@ -5,7 +5,7 @@ import {
     updatePatientProfile, 
     getAllPatients 
 } from '../controllers/patient.controller.js';
-import authMiddleware from '../middleware/auth.js'; // Assuming auth middleware exists
+import authMiddleware from '../middleware/index.js'; // Assuming auth middleware exists
 
 const router = express.Router();
 
