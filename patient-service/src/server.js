@@ -3,12 +3,17 @@ import dotenv from 'dotenv';
 dotenv.config()
 import cors from 'cors';
 import Connection from './config/MongoDb.js';
+import { setupSwagger } from './config/swagger.js';
+import PatientRouter from './routes/patient.routes.js';
 
 const App=express();
 App.use(cors());
 App.use(express.json());
 App.use(express.urlencoded({extended:true}));
 const PORT=process.env.PORT
+
+App.use('/api/patients', PatientRouter);
+setupSwagger(App);
 
 App.listen(PORT,()=>{
     console.log(`Server is running at ${PORT}`);
