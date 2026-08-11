@@ -2,7 +2,7 @@
 import mongoose from "mongoose";
 const Patient = mongoose.Schema({
     userId:{
-        type:string,
+        type:String,
         required:true
     },
     full_name:{
