@@ -1,15 +1,16 @@
 // models entry point for patient-service
 import mongoose from "mongoose";
 const Patient = mongoose.Schema({
-    first_name:{
+    userId:{
+        type:string,
+        required:true
+    },
+    full_name:{
         type:String,
         required:true
     },
 
-   last_name:{
-    type:String,
-    required:true
-   },
+  
    date_of_birth:{
     type:Date,
    },
