@@ -1,5 +1,6 @@
 import express from 'express';
 import * as DoctorController from '../controllers/doctor.controller.js';
+import { Auth } from '../middleware/index.js';
 
 const router = express.Router();
 
@@ -20,7 +21,7 @@ const router = express.Router();
  *       201:
  *         description: Doctor created successfully
  */
-router.post('/', DoctorController.createDoctor);
+router.post('/', Auth, DoctorController.createDoctor);
 
 /**
  * @swagger
@@ -32,7 +33,7 @@ router.post('/', DoctorController.createDoctor);
  *       200:
  *         description: List of doctors
  */
-router.get('/', DoctorController.getAllDoctors);
+router.get('/', Auth, DoctorController.getAllDoctors);
 
 /**
  * @swagger
@@ -50,7 +51,7 @@ router.get('/', DoctorController.getAllDoctors);
  *       200:
  *         description: Doctor profile details
  */
-router.get('/:id', DoctorController.getDoctorById);
+router.get('/:id', Auth, DoctorController.getDoctorById);
 
 /**
  * @swagger
@@ -68,7 +69,7 @@ router.get('/:id', DoctorController.getDoctorById);
  *       200:
  *         description: Doctor updated successfully
  */
-router.put('/:id', DoctorController.updateDoctor);
+router.put('/:id', Auth, DoctorController.updateDoctor);
 
 /**
  * @swagger
@@ -86,7 +87,7 @@ router.put('/:id', DoctorController.updateDoctor);
  *       200:
  *         description: Doctor deleted successfully
  */
-router.delete('/:id', DoctorController.deleteDoctor);
+router.delete('/:id', Auth, DoctorController.deleteDoctor);
 
 /**
  * @swagger
@@ -104,6 +105,6 @@ router.delete('/:id', DoctorController.deleteDoctor);
  *       200:
  *         description: Full profile including auth details
  */
-router.get('/profile/:userId', DoctorController.getDoctorFullProfile);
+router.get('/profile/:userId', Auth, DoctorController.getDoctorFullProfile);
 
 export default router;
