@@ -9,7 +9,7 @@ const AuthMiddleWare=async(req , res , next)=>{
             })
         }
         const token=authHeader.split(" ")[1];
-        const decode=jwt.verify(token);
+        const decode=jwt.verify(token, process.env.JWT_SECRET);
          req.userId=decode?._id;
          next()
         

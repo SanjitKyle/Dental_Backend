@@ -51,6 +51,9 @@ const Patient = mongoose.Schema({
     },
     relation:{
         type:String
+    },
+    created_by:{
+        type:String
     }
 
     

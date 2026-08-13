@@ -3,8 +3,9 @@ import * as patientService from '../services/patient.service.js';
 export const createPatientProfile = async (req, res) => {
     try {
         const patientData = req.body;
-
-        const newPatient = await patientService.createProfile(patientData);
+        const created_by = req.userId;
+        
+        const newPatient = await patientService.createProfile({ ...patientData, created_by });
         res.status(201).json({ message: 'Patient profile created successfully', data: newPatient });
     } catch (error) {
         res.status(400).json({ message: error.message || 'Error creating profile' });
