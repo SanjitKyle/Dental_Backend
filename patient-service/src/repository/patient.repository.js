@@ -33,6 +33,6 @@ export const updatePatient = async (id, updateData) => {
     );
 };
 
-export const getAllPatients = async () => {
-    return await Patient.find();
+export const getAllPatients = async (createdId) => {
+    return await Patient.find({created_by:createdId});
 };

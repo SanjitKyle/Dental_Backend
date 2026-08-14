@@ -36,7 +36,8 @@ export const updatePatientProfile = async (req, res) => {
 
 export const getAllPatients = async (req, res) => {
     try {
-        const patients = await patientService.getAllProfiles();
+        const userId=req.userId;
+        const patients = await patientService.getAllProfiles(userId);
         res.status(200).json({ data: patients });
     } catch (error) {
         res.status(500).json({ message: error.message || 'Internal server error' });

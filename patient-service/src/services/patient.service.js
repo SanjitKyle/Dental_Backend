@@ -22,6 +22,6 @@ export const updateProfile = async (id, data) => {
     return patient;
 };
 
-export const getAllProfiles = async () => {
-    return await patientRepository.getAllPatients();
+export const getAllProfiles = async (userId) => {
+    return await patientRepository.getAllPatients(userId);
 };
