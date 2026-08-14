@@ -1,5 +1,7 @@
 // middleware entry point for patient-service
 import jwt from 'jsonwebtoken'
+import dotenv from 'dotenv';
+dotenv.config()
 const AuthMiddleWare=async(req , res , next)=>{
     try{
         const authHeader=req.headers.authorization;
@@ -9,7 +11,7 @@ const AuthMiddleWare=async(req , res , next)=>{
             })
         }
         const token=authHeader.split(" ")[1];
-        const decode=jwt.verify(token, process.env.JWT_SECRET);
+        const decode=jwt.verify(token, process.env.SECRET_KEY);
          req.userId=decode?._id;
          next()
         
