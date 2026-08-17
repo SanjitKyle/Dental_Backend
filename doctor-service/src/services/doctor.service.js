@@ -4,21 +4,22 @@ import * as DoctorRepository from '../repository/doctor.repository.js';
 export const createDoctor = async (doctorData) => {
     // 1. Create Auth Account first
     try {
-        const authUrl = process.env.AUTH_SERVICE_URL || 'https://dentalbackend.kyleinfotech.co.in/api/auth';
-        
+        const authUrl = 'https://dentalbackend.kyleinfotech.co.in/api/auth';
+
         // We assume doctorData contains a 'password' field that the frontend sends
         const authPayload = {
+            name: `${doctorData.full_name} `,
             email: doctorData.email,
-            password: doctorData.password, 
+            password: doctorData.password  || "doctor123",
             role: 'doctor' // Assuming your auth service accepts a role
         };
 
         const authResponse = await axios.post(`${authUrl}/register`, authPayload);
-        
+
         // Extract the generated userId from the auth response
         // (Depends on how your auth service sends it back, typically authResponse.data.user._id or authResponse.data._id)
         const newUserId = authResponse.data.data?._id || authResponse.data.user?._id || authResponse.data._id;
-        
+
         if (!newUserId) {
             throw new Error("Auth service did not return a valid userId");
         }

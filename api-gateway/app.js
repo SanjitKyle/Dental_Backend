@@ -24,7 +24,7 @@ app.use(createProxyMiddleware({
 // Route to Doctor Service (assuming it runs on port 5002)
 app.use(createProxyMiddleware({
     pathFilter: '/api/doctors',
-    target: 'http://localhost:5002',
+    target: 'https://doctor-ryff.onrender.com',
     changeOrigin: true
 }));
 
