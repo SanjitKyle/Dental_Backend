@@ -9,12 +9,9 @@ const Patient = mongoose.Schema({
         type:String,
         required:true
     },
-
-  
    date_of_birth:{
     type:Date,
    },
-
     gender:{
         type:String,
         enum:['Male','Female','Other'],
@@ -55,11 +52,6 @@ const Patient = mongoose.Schema({
     created_by:{
         type:String
     }
-
-    
-    
-
-
 },{ timestamps: true })
 
 export default mongoose.model('Patient', Patient);
