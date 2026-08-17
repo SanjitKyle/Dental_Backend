@@ -34,7 +34,6 @@ const doctorSchema = new mongoose.Schema({
     },
     consultation_fee: {
         type: Number,
-        required: true
     },
     bio: {
         type: String,
