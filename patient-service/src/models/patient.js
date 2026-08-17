@@ -1,57 +1,67 @@
 // models entry point for patient-service
 import mongoose from "mongoose";
 const Patient = mongoose.Schema({
-    userId:{
-        type:String,
-        required:true
+    userId: {
+        type: String,
+        required: true
     },
-    full_name:{
-        type:String,
-        required:true
+
+    full_name: {
+        type: String,
+        required: true
     },
-   date_of_birth:{
-    type:Date,
-   },
-    gender:{
-        type:String,
-        enum:['Male','Female','Other'],
-        default:'Male'
+    date_of_birth: {
+        type: Date,
     },
-    blood_group:{
-        type:String,
-       
+    age: {
+        type: String
     },
-    phone:{
-        type:Number
+    gender: {
+        type: String,
+        enum: ['Male', 'Female', 'Other'],
+        default: 'Male'
     },
-    email:{
-        type:String
+    blood_group: {
+        type: String,
+
     },
-    address:{
-        type:String
+    phone: {
+        type: Number
     },
-    note:{
-        type:String
-    
+    email: {
+        type: String
     },
-    height:{
-        type:String
+    address: {
+        type: String
     },
-    weight:{
-        type:String
+    note: {
+        type: String
+
     },
-    emergency_contact_name:{
-        type:String
+    height: {
+        type: String
     },
-    emergencty_contact_phone:{
-        type:Number
+    weight: {
+        type: String
     },
-    relation:{
-        type:String
+    emergency_contact_name: {
+        type: String
     },
-    created_by:{
-        type:String
+    emergencty_contact_phone: {
+        type: Number
+    },
+    relation: {
+        type: String
+    },
+    last_visit: {
+        type: String
+    },
+    doctor: {
+        type: String
+    },
+    created_by: {
+        type: String
     }
-},{ timestamps: true })
+}, { timestamps: true })
 
 export default mongoose.model('Patient', Patient);
