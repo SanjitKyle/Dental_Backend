@@ -8,9 +8,9 @@ export const createDoctor = async (doctorData) => {
 
         // We assume doctorData contains a 'password' field that the frontend sends
         const authPayload = {
-            name: `${doctorData.full_name} `,
+            name: doctorData.full_name,
             email: doctorData.email,
-            password: doctorData.password  || "doctor123",
+            password: doctorData.password || "doctor123",
             role: 'doctor' // Assuming your auth service accepts a role
         };
 
