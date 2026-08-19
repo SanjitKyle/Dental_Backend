@@ -149,6 +149,6 @@ router.get('/:id', getPatientProfile);
  *       404:
  *         description: Profile not found
  */
-router.put('/:id', authMiddleware, updatePatientProfile);
+router.post('/:id', authMiddleware, updatePatientProfile);
 
 export default router;
