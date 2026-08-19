@@ -8,7 +8,7 @@ const Patient = mongoose.Schema({
 
     full_name: {
         type: String,
-        required: true
+        required: true         
     },
     date_of_birth: {
         type: Date,
@@ -56,7 +56,10 @@ const Patient = mongoose.Schema({
     last_visit: {
         type: String
     },
-    doctor: {
+    assigned_doctor_id: {
+        type: String
+    },
+    assigned_doctor_name: {
         type: String
     },
     created_by: {
