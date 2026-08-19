@@ -121,7 +121,7 @@ router.get('/:id', getPatientProfile);
 /**
  * @swagger
  * /api/patients/{id}:
- *   put:
+ *   post:
  *     summary: Update a specific patient profile
  *     tags: [Patients]
  *     security:
