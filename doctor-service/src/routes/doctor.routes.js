@@ -56,7 +56,7 @@ router.get('/:id', Auth, DoctorController.getDoctorById);
 /**
  * @swagger
  * /api/doctors/{id}:
- *   put:
+ *   post:
  *     summary: Update doctor details
  *     tags: [Doctors]
  *     parameters:
@@ -69,12 +69,12 @@ router.get('/:id', Auth, DoctorController.getDoctorById);
  *       200:
  *         description: Doctor updated successfully
  */
-router.put('/:id', Auth, DoctorController.updateDoctor);
+router.post('/:id', Auth, DoctorController.updateDoctor);
 
 /**
  * @swagger
- * /api/doctors/{id}:
- *   delete:
+ * /api/doctors/delete/{id}:
+ *   post:
  *     summary: Delete a doctor
  *     tags: [Doctors]
  *     parameters:
@@ -87,7 +87,7 @@ router.put('/:id', Auth, DoctorController.updateDoctor);
  *       200:
  *         description: Doctor deleted successfully
  */
-router.delete('/:id', Auth, DoctorController.deleteDoctor);
+router.post('/delete/:id', Auth, DoctorController.deleteDoctor);
 
 /**
  * @swagger

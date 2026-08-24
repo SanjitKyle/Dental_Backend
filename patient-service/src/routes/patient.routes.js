@@ -95,7 +95,7 @@ router.post('/', authMiddleware, createPatientProfile);
  *       500:
  *         description: Internal server error
  */
-router.get('/', getAllPatients); // Could add admin auth middleware here if needed
+router.get('/', authMiddleware, getAllPatients);
 
 /**
  * @swagger

@@ -48,7 +48,7 @@ export const LoginUser=async(req,res)=>{
                 success: false
             });
         }
-        const token=await generateToken({id:existingUser._id,email:existingUser.email,role:existingUser.role});
+        const token=await generateToken({_id:existingUser._id,email:existingUser.email,role:existingUser.role});
 
         return res.status(200).json({
             message:"user logged in successfully",

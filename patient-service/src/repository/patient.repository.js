@@ -6,7 +6,8 @@ export const createPatient = async (patientData) => {
     if(existingPatient){
         throw new Error('Patient with this email already exists');
     }
-    const response=await axios.post('https://dentalbackend.kyleinfotech.co.in/api/auth/register',{
+    const authUrl = process.env.AUTH_SERVICE_URL || 'http://localhost:3000/api/auth/register';
+    const response=await axios.post(authUrl,{
         name:full_name,
         email:email,
         password:'defaultPassword123',

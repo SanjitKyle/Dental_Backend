@@ -18,7 +18,7 @@ export const getAllDoctors = async (query = {}) => {
 };
 
 export const updateDoctor = async (id, updateData) => {
-    return await Doctor.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
+    return await Doctor.findByIdAndUpdate(id, { $set: updateData }, { new: true, runValidators: true });
 };
 
 export const deleteDoctor = async (id) => {

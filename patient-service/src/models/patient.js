@@ -47,7 +47,7 @@ const Patient = mongoose.Schema({
     emergency_contact_name: {
         type: String
     },
-    emergencty_contact_phone: {
+    emergency_contact_phone: {
         type: Number
     },
     relation: {
