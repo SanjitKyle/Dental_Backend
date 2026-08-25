@@ -4,7 +4,7 @@ import * as DoctorRepository from '../repository/doctor.repository.js';
 export const createDoctor = async (doctorData) => {
     // 1. Create Auth Account first
     try {
-        const authUrl = process.env.AUTH_SERVICE_URL || 'http://localhost:3000/api/auth';
+        const authUrl = process.env.AUTH_SERVICE_URL || 'https://dentalbackend.kyleinfotech.co.in/api/auth';
 
         // We assume doctorData contains a 'password' field that the frontend sends
         const authPayload = {
@@ -55,7 +55,7 @@ export const getDoctorFullProfile = async (userId) => {
     // 2. Fetch from Auth Service using internal API call
     let authInfo = null;
     try {
-        const authUrl = process.env.AUTH_SERVICE_URL || 'http://localhost:3000/api/auth';
+        const authUrl = process.env.AUTH_SERVICE_URL || 'https://dentalbackend.kyleinfotech.co.in/api/auth';
         const authResponse = await axios.get(`${authUrl}/users/${userId}`);
         authInfo = authResponse.data;
     } catch (authError) {
