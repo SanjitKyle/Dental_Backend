@@ -10,28 +10,28 @@ app.use(cors());
 // Route to Auth Service
 app.use(createProxyMiddleware({
     pathFilter: '/api/auth',
-    target:  'https://dental-backend-jekw.onrender.com',
+    target: process.env.AUTH_SERVICE_URL || 'http://localhost:5001',
     changeOrigin: true
 }));
 
-// Route to Patient Service (assuming it runs on port 5001)
+// Route to Patient Service
 app.use(createProxyMiddleware({
     pathFilter: '/api/patients',
-    target:  'https://patient-service-8t30.onrender.com',
+    target: process.env.PATIENT_SERVICE_URL || 'http://localhost:5002',
     changeOrigin: true
 }));
 
-// Route to Doctor Service (assuming it runs on port 5002)
+// Route to Doctor Service
 app.use(createProxyMiddleware({
     pathFilter: '/api/doctors',
-    target: 'https://doctor-ryff.onrender.com',
+    target: process.env.DOCTOR_SERVICE_URL || 'http://localhost:5003',
     changeOrigin: true
 }));
 
-// Route to Appointment Service (assuming it runs on port 5003)
+// Route to Appointment Service
 app.use(createProxyMiddleware({
     pathFilter: '/api/appointments',
-    target: 'http://localhost:5003',
+    target: process.env.APPOINTMENT_SERVICE_URL || 'http://localhost:5004',
     changeOrigin: true
 }));
 
