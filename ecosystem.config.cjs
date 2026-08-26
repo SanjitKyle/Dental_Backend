@@ -26,6 +26,7 @@ module.exports = {
       script: "./patient-service/src/server.js",
       env: {
         PORT: 5002,
+        AUTH_SERVICE_URL: "http://localhost:5001/api/auth"
       }
     },
     {
@@ -33,6 +34,7 @@ module.exports = {
       script: "./doctor-service/src/server.js",
       env: {
         PORT: 5003,
+        AUTH_SERVICE_URL: "http://localhost:5001/api/auth"
       }
     },
     {
