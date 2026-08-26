@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     {
       name: "api-gateway",
-      script: "./api-gateway/app.js",
+      script: "./api-gateway/server.js",
       env: {
         PORT: 5000,
         AUTH_SERVICE_URL: "http://localhost:5001",
