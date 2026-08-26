@@ -13,7 +13,7 @@ module.exports = {
     },
     {
       name: "auth-service",
-      script: "./auth-service/server.js",
+      script: "./auth-service/src/server.js",
       env: {
         PORT: 5001,
         // Add your DB strings here or use a .env file in the auth-service folder
@@ -23,21 +23,21 @@ module.exports = {
     },
     {
       name: "patient-service",
-      script: "./patient-service/server.js",
+      script: "./patient-service/src/server.js",
       env: {
         PORT: 5002,
       }
     },
     {
       name: "doctor-service",
-      script: "./doctor-service/server.js",
+      script: "./doctor-service/src/server.js",
       env: {
         PORT: 5003,
       }
     },
     {
       name: "appointment-service",
-      script: "./appointment-service/server.js",
+      script: "./appointment-service/src/server.js",
       env: {
         PORT: 5004,
       }
