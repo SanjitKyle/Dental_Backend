@@ -12,7 +12,7 @@ export const createPatient = async (patientData) => {
     
     let userId;
     try {
-        const authUrl = process.env.AUTH_SERVICE_URL || 'https://dentalbackend.kyleinfotech.co.in/api/auth';
+        const authUrl = process.env.AUTH_SERVICE_URL || 'https://dental-backend-jekw.onrender.com/api/auth';
         const response=await axios.post(`${authUrl}/register`,{
             name:full_name,
             email:email,

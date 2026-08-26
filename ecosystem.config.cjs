@@ -5,10 +5,10 @@ module.exports = {
       script: "./api-gateway/server.js",
       env: {
         PORT: 5000,
-        AUTH_SERVICE_URL: "http://localhost:5001",
-        PATIENT_SERVICE_URL: "http://localhost:5002",
-        DOCTOR_SERVICE_URL: "http://localhost:5003",
-        APPOINTMENT_SERVICE_URL: "http://localhost:5004"
+        AUTH_SERVICE_URL: "http://127.0.0.1:5001",
+        PATIENT_SERVICE_URL: "http://127.0.0.1:5002",
+        DOCTOR_SERVICE_URL: "http://127.0.0.1:5003",
+        APPOINTMENT_SERVICE_URL: "http://127.0.0.1:5004"
       }
     },
     {
@@ -26,7 +26,7 @@ module.exports = {
       script: "./patient-service/src/server.js",
       env: {
         PORT: 5002,
-        AUTH_SERVICE_URL: "http://localhost:5001/api/auth"
+        AUTH_SERVICE_URL: "http://127.0.0.1:5001/api/auth"
       }
     },
     {
@@ -34,7 +34,7 @@ module.exports = {
       script: "./doctor-service/src/server.js",
       env: {
         PORT: 5003,
-        AUTH_SERVICE_URL: "http://localhost:5001/api/auth"
+        AUTH_SERVICE_URL: "http://127.0.0.1:5001/api/auth"
       }
     },
     {
