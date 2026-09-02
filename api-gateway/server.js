@@ -31,7 +31,14 @@ app.use(createProxyMiddleware({
 // Route to Appointment Service (assuming it runs on port 5003)
 app.use(createProxyMiddleware({
     pathFilter: '/api/appointments',
-    target: 'https://appointment-b0ky.onrender.com',
+    target: process.env.APPOINTMENT_SERVICE_URL || 'https://appointment-b0ky.onrender.com',
+    changeOrigin: true
+}));
+
+// Route to Odontogram Service (assuming it runs on port 5005)
+app.use(createProxyMiddleware({
+    pathFilter: '/api/odontograms',
+    target: process.env.ODONTOGRAM_SERVICE_URL || 'http://127.0.0.1:5005',
     changeOrigin: true
 }));
 

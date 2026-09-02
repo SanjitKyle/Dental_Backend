@@ -59,7 +59,22 @@ services:
       - key: JWT_SECRET
         sync: false
 
-  # 5. API Gateway (Entry Point)
+  # 5. Odontogram Service
+  - type: web
+    name: odontogram-service
+    env: node
+    rootDir: odontogram-service
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+
+  # 6. API Gateway (Entry Point)
   - type: web
     name: api-gateway
     env: node
@@ -88,4 +103,9 @@ services:
         fromService:
           type: web
           name: appointment-service
+          property: host
+      - key: ODONTOGRAM_SERVICE_URL
+        fromService:
+          type: web
+          name: odontogram-service
           property: host

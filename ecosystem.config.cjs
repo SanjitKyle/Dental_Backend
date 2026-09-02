@@ -8,7 +8,8 @@ module.exports = {
         AUTH_SERVICE_URL: "http://127.0.0.1:5001",
         PATIENT_SERVICE_URL: "http://127.0.0.1:5002",
         DOCTOR_SERVICE_URL: "http://127.0.0.1:5003",
-        APPOINTMENT_SERVICE_URL: "http://127.0.0.1:5004"
+        APPOINTMENT_SERVICE_URL: "http://127.0.0.1:5004",
+        ODONTOGRAM_SERVICE_URL: "http://127.0.0.1:5005"
       }
     },
     {
@@ -42,6 +43,13 @@ module.exports = {
       script: "./appointment-service/src/server.js",
       env: {
         PORT: 5004,
+      }
+    },
+    {
+      name: "odontogram-service",
+      script: "./odontogram-service/src/server.js",
+      env: {
+        PORT: 5005,
       }
     }
   ]
