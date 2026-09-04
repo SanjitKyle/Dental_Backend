@@ -74,7 +74,22 @@ services:
       - key: JWT_SECRET
         sync: false
 
-  # 6. API Gateway (Entry Point)
+  # 6. Prescription Service
+  - type: web
+    name: prescription-service
+    env: node
+    rootDir: prescription-service
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+
+  # 7. API Gateway (Entry Point)
   - type: web
     name: api-gateway
     env: node
@@ -108,4 +123,9 @@ services:
         fromService:
           type: web
           name: odontogram-service
+          property: host
+      - key: PRESCRIPTION_SERVICE_URL
+        fromService:
+          type: web
+          name: prescription-service
           property: host

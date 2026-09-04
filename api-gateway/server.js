@@ -42,6 +42,13 @@ app.use(createProxyMiddleware({
     changeOrigin: true
 }));
 
+// Route to Prescription Service (assuming it runs on port 5006)
+app.use(createProxyMiddleware({
+    pathFilter: '/api/prescriptions',
+    target: process.env.PRESCRIPTION_SERVICE_URL || 'http://127.0.0.1:5006',
+    changeOrigin: true
+}));
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log('api gateway is running on port ' + PORT);
