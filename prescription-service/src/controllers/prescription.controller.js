@@ -4,7 +4,7 @@ import * as prescriptionService from '../services/prescription.service.js';
 export const createPrescription = async (req, res) => {
     try {
         const userId = req.userId;
-        const { patientId, doctorId, start_time, followUpDate, followUpInstructions } = req.body;
+        const { patientId, doctorId , followUpDate, followUpInstructions } = req.body;
         
         // 1. Create the prescription record
         const prescription = await prescriptionService.createPrescription(req.body, userId);
