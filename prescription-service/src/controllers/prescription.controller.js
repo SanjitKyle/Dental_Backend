@@ -9,14 +9,13 @@ export const createPrescription = async (req, res) => {
         // 1. Create the prescription record
         const prescription = await prescriptionService.createPrescription(req.body, userId);
 
-        // 2. Optionally create follow-up appointment if followUpDate is provided
-        if (followUpDate && start_time) {
+        // 2. Optionally create follow-up appointment if both followUpDate and start_time are provided
+        if (followUpDate) {
             try {
                 const token = req.headers.authorization ? req.headers.authorization.split(' ')[1] : '';
                 const appointmentData = {
                     patient: patientId,
                     doctor: doctorId,
-
                     date: followUpDate,
                     status: 'Scheduled',
                     visit_type: 'Follow-up',
