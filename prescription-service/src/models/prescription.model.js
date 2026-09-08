@@ -88,6 +88,9 @@ const PrescriptionSchema = new mongoose.Schema({
     diagnosis: [{
         type: String
     }],
+    toothNumbers: [{
+        type: Number
+    }],
     patientAllergiesSnapshot: [{
         type: String
     }],

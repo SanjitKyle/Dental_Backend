@@ -11,8 +11,9 @@ const generatePrescriptionNumber = async () => {
     const datePrefix = `${year}${month}${day}`;
 
     const count = await prescriptionRepo.countTodayPrescriptions(datePrefix);
+    const randomSuffix = Math.floor(1000 + Math.random() * 9000);
     const sequence = String(count + 1).padStart(4, '0');
-    return `RX-${datePrefix}-${sequence}`;
+    return `RX-${datePrefix}-${sequence}-${randomSuffix}`;
 };
 
 export const createPrescription = async (data, userId) => {
@@ -21,12 +22,13 @@ export const createPrescription = async (data, userId) => {
     }
 
     const prescriptionNumber = await generatePrescriptionNumber();
+    const effectiveUserId = userId || data.createdBy || data.doctorId || 'system';
 
     const payload = {
         ...data,
         prescriptionNumber,
-        createdBy: userId,
-        lastUpdatedBy: userId
+        createdBy: effectiveUserId,
+        lastUpdatedBy: effectiveUserId
     };
 
     return await prescriptionRepo.create(payload);
