@@ -1,33 +1,40 @@
+import axios from 'axios';
 import * as prescriptionService from '../services/prescription.service.js';
 
 export const createPrescription = async (req, res) => {
     try {
         const userId = req.userId;
         const { patientId, doctorId, start_time, followUpDate, followUpInstructions } = req.body;
+        
+        // 1. Create the prescription record
         const prescription = await prescriptionService.createPrescription(req.body, userId);
-        const token = req.headers.authorization.split(' ')[1]; // Assuming Bearer token
-        const appointmentData = {
-            patient: patientId,
-            doctor: doctorId,
-            start_time: start_time,
-            date: followUpDate,
-            status: 'Scheduled',
-            visit_type: 'Follow-up',
-            created_by: userId,
-            resonForVisit: followUpInstructions,
+        
+        // 2. Optionally create follow-up appointment if followUpDate is provided
+        if (followUpDate && start_time) {
+            try {
+                const token = req.headers.authorization ? req.headers.authorization.split(' ')[1] : '';
+                const appointmentData = {
+                    patient: patientId,
+                    doctor: doctorId,
+                    start_time: start_time,
+                    date: followUpDate,
+                    status: 'Scheduled',
+                    visit_type: 'Follow-up',
+                    created_by: userId,
+                    reasonForVisit: followUpInstructions || 'Follow-up visit',
+                };
+
+                const appointmentServiceUrl = process.env.APPOINTMENT_SERVICE_URL || 'https://dentalbackend.kyleinfotech.co.in/api/appointments';
+                await axios.post(appointmentServiceUrl, appointmentData, {
+                    headers: {
+                        authorization: `Bearer ${token}`
+                    }
+                });
+            } catch (apptErr) {
+                console.warn('Follow-up appointment auto-creation failed, but prescription was created:', apptErr.message);
+            }
         }
 
-        const createAppointment = await axios.post("https://dentalbackend.kyleinfotech.co.in/api/appointments", appointmentData, {
-            headers: {
-                authorization: `Bearer ${token}`
-            }
-        });
-        if(!createAppointment.data.success){
-            return res.status(400).json({
-                success: false,
-                message: 'Failed to create appointment'
-            });
-        }   
         res.status(201).json({
             success: true,
             message: 'Prescription created successfully',
