@@ -3,7 +3,25 @@ import * as prescriptionService from '../services/prescription.service.js';
 export const createPrescription = async (req, res) => {
     try {
         const userId = req.userId;
+        const { patientId, doctorId, start_time, followUpDate, followUpInstructions } = req.body;
         const prescription = await prescriptionService.createPrescription(req.body, userId);
+        const token = req.headers.authorization.split(' ')[1]; // Assuming Bearer token
+        const appointmentData = {
+            patient: patientId,
+            doctor: doctorId,
+            start_time: start_time,
+            date: followUpDate,
+            status: 'Scheduled',
+            visit_type: 'Follow-up',
+            created_by: userId,
+            resonForVisit: followUpInstructions,
+        }
+
+        const createAppointment = await axios.post("https://dentalbackend.kyleinfotech.co.in/api/appointments", appointmentData, {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
         res.status(201).json({
             success: true,
             message: 'Prescription created successfully',
