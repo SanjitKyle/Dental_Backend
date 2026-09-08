@@ -22,6 +22,12 @@ export const createPrescription = async (req, res) => {
                 authorization: `Bearer ${token}`
             }
         });
+        if(!createAppointment.data.success){
+            return res.status(400).json({
+                success: false,
+                message: 'Failed to create appointment'
+            });
+        }   
         res.status(201).json({
             success: true,
             message: 'Prescription created successfully',
