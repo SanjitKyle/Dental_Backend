@@ -4,11 +4,11 @@ import * as prescriptionService from '../services/prescription.service.js';
 export const createPrescription = async (req, res) => {
     try {
         const userId = req.userId;
-        const { patientId, doctorId , followUpDate, followUpInstructions } = req.body;
-        
+        const { patientId, doctorId, followUpDate, followUpInstructions } = req.body;
+
         // 1. Create the prescription record
         const prescription = await prescriptionService.createPrescription(req.body, userId);
-        
+
         // 2. Optionally create follow-up appointment if followUpDate is provided
         if (followUpDate && start_time) {
             try {
@@ -16,7 +16,7 @@ export const createPrescription = async (req, res) => {
                 const appointmentData = {
                     patient: patientId,
                     doctor: doctorId,
-                    start_time: start_time,
+
                     date: followUpDate,
                     status: 'Scheduled',
                     visit_type: 'Follow-up',
