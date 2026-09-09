@@ -28,7 +28,7 @@ const appointment = mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['Scheduled', 'Completed', 'Cancelled', 'No-Show', 'Rescheduled']
+        enum: ['Scheduled', 'Completed', 'Cancelled', 'No-Show', 'Rescheduled','Follow-up']
     },
     visit_type: {
         type: String,

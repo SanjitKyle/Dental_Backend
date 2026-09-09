@@ -17,7 +17,7 @@ export const createPrescription = async (req, res) => {
                     patient: patientId,
                     doctor: doctorId,
                     date: followUpDate,
-                    status: 'Scheduled',
+                    status: 'Follow-up',
                     visit_type: 'Follow-up',
                     created_by: userId,
                     reasonForVisit: followUpInstructions || 'Follow-up visit',
