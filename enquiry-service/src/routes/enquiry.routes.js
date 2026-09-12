@@ -2,15 +2,13 @@ import express from 'express';
 import {
     createEnquiry,
     getEnquiries,
-    getStatistics,
     getEnquiryById,
     updateEnquiry,
-    addFollowUp,
     updateStatus,
     convertEnquiry,
     deleteEnquiry
 } from '../controllers/enquiry.controller.js';
-import { authMiddleware, optionalAuthMiddleware } from '../middleware/auth.middleware.js';
+import { authMiddleware } from '../middleware/auth.middleware.js';
 
 const router = express.Router();
 
@@ -102,21 +100,9 @@ const router = express.Router();
  *       400:
  *         description: Bad request
  */
-router.post('/', optionalAuthMiddleware, createEnquiry);
+router.post('/', authMiddleware, createEnquiry);
 
-/**
- * @swagger
- * /api/enquiries/stats:
- *   get:
- *     summary: Get lead conversion and pipeline statistics
- *     tags: [Enquiries]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: Lead statistics
- */
-router.get('/stats', authMiddleware, getStatistics);
+
 
 /**
  * @swagger
@@ -204,31 +190,7 @@ router.get('/:id', authMiddleware, getEnquiryById);
  */
 router.put('/:id', authMiddleware, updateEnquiry);
 
-/**
- * @swagger
- * /api/enquiries/{id}/follow-ups:
- *   post:
- *     summary: Record a follow-up call/message interaction
- *     tags: [Enquiries]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/FollowUpInput'
- *     responses:
- *       200:
- *         description: Follow-up interaction logged
- */
-router.post('/:id/follow-ups', authMiddleware, addFollowUp);
+
 
 /**
  * @swagger
