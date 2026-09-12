@@ -100,7 +100,7 @@ const router = express.Router();
  *       400:
  *         description: Bad request
  */
-router.post('/', authMiddleware, createEnquiry);
+router.post('/', createEnquiry);
 
 
 

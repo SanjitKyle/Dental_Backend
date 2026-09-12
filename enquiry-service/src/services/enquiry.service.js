@@ -1,13 +1,29 @@
 import * as enquiryRepo from '../repository/enquiry.repository.js';
 import axios from 'axios';
 
-export const createEnquiry = async (data, userId) => {
-    if (!data.name || !data.phone) {
-        throw new Error('Name and phone number are required');
+export const createEnquiry = async (data, userId = null) => {
+    if (!data.name || !data.name.trim()) {
+        throw new Error('Name is required');
+    }
+    if (!data.phone || !data.phone.trim()) {
+        throw new Error('Phone number is required');
     }
 
     const payload = {
-        ...data,
+        name: data.name.trim(),
+        phone: data.phone.trim(),
+        email: data.email ? data.email.trim().toLowerCase() : undefined,
+        gender: data.gender || undefined,
+        address: data.address || undefined,
+        serviceRequested: data.serviceRequested || 'General Consultation',
+        preferredDoctorId: data.preferredDoctorId || null,
+        preferredDoctorName: data.preferredDoctorName || null,
+        preferredDate: data.preferredDate || null,
+        preferredTime: data.preferredTime || null,
+        message: data.message || '',
+        source: data.source || 'Website',
+        status: 'New',
+        priority: data.priority || 'Medium',
         createdBy: userId || 'public',
         lastUpdatedBy: userId || 'public'
     };

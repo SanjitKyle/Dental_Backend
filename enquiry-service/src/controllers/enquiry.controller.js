@@ -2,8 +2,7 @@ import * as enquiryService from '../services/enquiry.service.js';
 
 export const createEnquiry = async (req, res) => {
     try {
-        const userId = req.userId || null;
-        const enquiry = await enquiryService.createEnquiry(req.body, userId);
+        const enquiry = await enquiryService.createEnquiry(req.body);
         res.status(201).json({
             success: true,
             message: 'Enquiry submitted successfully',
