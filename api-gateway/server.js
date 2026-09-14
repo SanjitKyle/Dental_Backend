@@ -12,8 +12,6 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin']
 }));
 
-app.options('*', cors());
-
 // Route to Auth Service
 app.use(createProxyMiddleware({
     pathFilter: '/api/auth',
