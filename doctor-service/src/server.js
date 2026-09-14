@@ -14,7 +14,7 @@ import doctorRoutes from './routes/doctor.routes.js';
 setupSwagger(app);
 app.use('/api/doctors', doctorRoutes);
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5002;
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
