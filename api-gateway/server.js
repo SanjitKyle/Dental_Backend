@@ -5,51 +5,58 @@ const cors = require('cors');
 
 dotenv.config();
 const app = express();
-app.use(cors());
+
+app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin']
+}));
+
+app.options('*', cors());
 
 // Route to Auth Service
 app.use(createProxyMiddleware({
     pathFilter: '/api/auth',
-    target:  'https://dental-backend-jekw.onrender.com',
+    target: process.env.AUTH_SERVICE_URL || 'http://127.0.0.1:5000',
     changeOrigin: true
 }));
 
-// Route to Patient Service (assuming it runs on port 5001)
+// Route to Patient Service
 app.use(createProxyMiddleware({
     pathFilter: '/api/patients',
-    target:  'https://patient-service-8t30.onrender.com',
+    target: process.env.PATIENT_SERVICE_URL || 'http://127.0.0.1:5001',
     changeOrigin: true
 }));
 
-// Route to Doctor Service (assuming it runs on port 5002)
+// Route to Doctor Service
 app.use(createProxyMiddleware({
     pathFilter: '/api/doctors',
-    target: 'https://doctor-ryff.onrender.com',
+    target: process.env.DOCTOR_SERVICE_URL || 'http://127.0.0.1:5002',
     changeOrigin: true
 }));
 
-// Route to Appointment Service (assuming it runs on port 5003)
+// Route to Appointment Service
 app.use(createProxyMiddleware({
     pathFilter: '/api/appointments',
-    target: process.env.APPOINTMENT_SERVICE_URL || 'https://appointment-b0ky.onrender.com',
+    target: process.env.APPOINTMENT_SERVICE_URL || 'http://127.0.0.1:5003',
     changeOrigin: true
 }));
 
-// Route to Odontogram Service (assuming it runs on port 5005)
+// Route to Odontogram Service
 app.use(createProxyMiddleware({
     pathFilter: '/api/odontograms',
     target: process.env.ODONTOGRAM_SERVICE_URL || 'http://127.0.0.1:5005',
     changeOrigin: true
 }));
 
-// Route to Prescription Service (assuming it runs on port 5006)
+// Route to Prescription Service
 app.use(createProxyMiddleware({
     pathFilter: '/api/prescriptions',
     target: process.env.PRESCRIPTION_SERVICE_URL || 'http://127.0.0.1:5006',
     changeOrigin: true
 }));
 
-// Route to Enquiry Service (assuming it runs on port 5007)
+// Route to Enquiry Service
 app.use(createProxyMiddleware({
     pathFilter: '/api/enquiries',
     target: process.env.ENQUIRY_SERVICE_URL || 'http://127.0.0.1:5007',
