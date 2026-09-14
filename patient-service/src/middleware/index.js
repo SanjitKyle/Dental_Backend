@@ -10,9 +10,10 @@ const AuthMiddleWare=async(req , res , next)=>{
                 message:"Unauthorized"
             })
         }
-        const token=authHeader.split(" ")[1];
-        const decode=jwt.verify(token, process.env.SECRET_KEY);
-         req.userId=decode?._id;
+        const token = authHeader.split(" ")[1];
+        const secret = process.env.SECRET_KEY || process.env.JWT_SECRET || 'HOSPITAL_MAN';
+        const decode = jwt.verify(token, secret);
+        req.userId = decode?._id || decode?.id || decode?.userId;
          next()
         
     }catch(error)
