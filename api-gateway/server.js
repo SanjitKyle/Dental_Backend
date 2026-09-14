@@ -36,7 +36,7 @@ app.use(createProxyMiddleware({
 // Route to Appointment Service
 app.use(createProxyMiddleware({
     pathFilter: '/api/appointments',
-    target: process.env.APPOINTMENT_SERVICE_URL || 'http://127.0.0.1:5003',
+    target: process.env.APPOINTMENT_SERVICE_URL || 'http://127.0.0.1:5004',
     changeOrigin: true
 }));
 
