@@ -1,6 +1,7 @@
 import express from 'express';
 import {
     createPrescription,
+    getAllPrescriptions,
     getPrescriptionById,
     getPrescriptionByNumber,
     getPrescriptionsByPatient,
@@ -166,6 +167,7 @@ const router = express.Router();
  *         description: Bad request
  */
 router.post('/', authMiddleware, createPrescription);
+router.get('/', authMiddleware, getAllPrescriptions);
 
 /**
  * @swagger

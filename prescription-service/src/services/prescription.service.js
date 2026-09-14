@@ -34,6 +34,10 @@ export const createPrescription = async (data, userId) => {
     return await prescriptionRepo.create(payload);
 };
 
+export const getAllPrescriptions = async (filters = {}) => {
+    return await prescriptionRepo.findAll(filters);
+};
+
 export const getPrescriptionById = async (id) => {
     const prescription = await prescriptionRepo.findById(id);
     if (!prescription) {

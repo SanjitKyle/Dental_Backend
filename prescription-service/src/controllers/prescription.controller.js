@@ -47,6 +47,21 @@ export const createPrescription = async (req, res) => {
     }
 };
 
+export const getAllPrescriptions = async (req, res) => {
+    try {
+        const prescriptions = await prescriptionService.getAllPrescriptions(req.query);
+        res.status(200).json({
+            success: true,
+            data: prescriptions
+        });
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            message: error.message || 'Failed to fetch prescriptions'
+        });
+    }
+};
+
 export const getPrescriptionById = async (req, res) => {
     try {
         const { id } = req.params;
