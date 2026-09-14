@@ -14,8 +14,9 @@ export const Auth = async (req, res, next) => {
             })
         }
         const token = authHeader.split(" ")[1];
-        const decode = jwt.verify(token, process.env.SECRET_KEY);
-        const userId = decode?._id;
+        const secret = process.env.SECRET_KEY || process.env.JWT_SECRET || 'HOSPITAL_MAN';
+        const decode = jwt.verify(token, secret);
+        const userId = decode?._id || decode?.id || decode?.userId;
         req.userId = userId;
         next();
 
