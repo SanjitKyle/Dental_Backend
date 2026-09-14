@@ -15,14 +15,14 @@ app.use(cors({
 // Route to Auth Service
 app.use(createProxyMiddleware({
     pathFilter: '/api/auth',
-    target: process.env.AUTH_SERVICE_URL || 'http://127.0.0.1:5000',
+    target: process.env.AUTH_SERVICE_URL || 'http://127.0.0.1:5001',
     changeOrigin: true
 }));
 
 // Route to Patient Service
 app.use(createProxyMiddleware({
     pathFilter: '/api/patients',
-    target: process.env.PATIENT_SERVICE_URL || 'http://127.0.0.1:5001',
+    target: process.env.PATIENT_SERVICE_URL || 'http://127.0.0.1:5002',
     changeOrigin: true
 }));
 
