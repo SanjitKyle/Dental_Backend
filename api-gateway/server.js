@@ -12,52 +12,52 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin']
 }));
 
-// Route to Auth Service (Port 5001)
+// Route to Auth Service
 app.use(createProxyMiddleware({
     pathFilter: '/api/auth',
-    target: process.env.AUTH_SERVICE_URL || 'http://127.0.0.1:5001',
+    target: 'http://127.0.0.1:5000',
     changeOrigin: true
 }));
 
-// Route to Patient Service (Port 5002)
+// Route to Patient Service
 app.use(createProxyMiddleware({
     pathFilter: '/api/patients',
-    target: process.env.PATIENT_SERVICE_URL || 'http://127.0.0.1:5002',
+    target: 'http://127.0.0.1:5001',
     changeOrigin: true
 }));
 
-// Route to Doctor Service (Port 5003)
+// Route to Doctor Service
 app.use(createProxyMiddleware({
     pathFilter: '/api/doctors',
-    target: process.env.DOCTOR_SERVICE_URL || 'http://127.0.0.1:5003',
+    target: 'http://127.0.0.1:5002',
     changeOrigin: true
 }));
 
-// Route to Appointment Service (Port 5004)
+// Route to Appointment Service
 app.use(createProxyMiddleware({
     pathFilter: '/api/appointments',
-    target: process.env.APPOINTMENT_SERVICE_URL || 'http://127.0.0.1:5004',
+    target: 'http://127.0.0.1:5003',
     changeOrigin: true
 }));
 
-// Route to Odontogram Service (Port 5005)
+// Route to Odontogram Service
 app.use(createProxyMiddleware({
     pathFilter: '/api/odontograms',
-    target: process.env.ODONTOGRAM_SERVICE_URL || 'http://127.0.0.1:5005',
+    target: 'http://127.0.0.1:5005',
     changeOrigin: true
 }));
 
-// Route to Prescription Service (Port 5006)
+// Route to Prescription Service
 app.use(createProxyMiddleware({
     pathFilter: '/api/prescriptions',
-    target: process.env.PRESCRIPTION_SERVICE_URL || 'http://127.0.0.1:5006',
+    target: 'http://127.0.0.1:5006',
     changeOrigin: true
 }));
 
-// Route to Enquiry Service (Port 5007)
+// Route to Enquiry Service
 app.use(createProxyMiddleware({
     pathFilter: '/api/enquiries',
-    target: process.env.ENQUIRY_SERVICE_URL || 'http://127.0.0.1:5007',
+    target: 'http://127.0.0.1:5007',
     changeOrigin: true
 }));
 
