@@ -4,7 +4,7 @@ import * as DoctorRepository from '../repository/doctor.repository.js';
 export const createDoctor = async (doctorData) => {
     // 1. Create Auth Account first
     try {
-        const authUrl = process.env.AUTH_SERVICE_URL || 'https://dental-backend-jekw.onrender.com/api/auth';
+        const authUrl = process.env.AUTH_SERVICE_URL 
 
         // We assume doctorData contains a 'password' field that the frontend sends
         const authPayload = {
