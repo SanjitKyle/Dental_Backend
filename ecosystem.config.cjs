@@ -11,7 +11,8 @@ module.exports = {
         APPOINTMENT_SERVICE_URL: "http://127.0.0.1:5004",
         ODONTOGRAM_SERVICE_URL: "http://127.0.0.1:5005",
         PRESCRIPTION_SERVICE_URL: "http://127.0.0.1:5006",
-        ENQUIRY_SERVICE_URL: "http://127.0.0.1:5007"
+        ENQUIRY_SERVICE_URL: "http://127.0.0.1:5007",
+        STAFF_SERVICE_URL: "http://127.0.0.1:5008"
       }
     },
     {
@@ -66,6 +67,14 @@ module.exports = {
       script: "./enquiry-service/src/server.js",
       env: {
         PORT: 5007,
+      }
+    },
+    {
+      name: "staff-service",
+      script: "./staff-service/src/server.js",
+      env: {
+        PORT: 5008,
+        AUTH_SERVICE_URL: "http://127.0.0.1:5001"
       }
     }
   ]

@@ -61,6 +61,13 @@ app.use(createProxyMiddleware({
     changeOrigin: true
 }));
 
+// Route to Staff Service
+app.use(createProxyMiddleware({
+    pathFilter: '/api/staff',
+    target: 'http://127.0.0.1:5008',
+    changeOrigin: true
+}));
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log('api gateway is running on port ' + PORT);

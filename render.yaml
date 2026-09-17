@@ -104,7 +104,27 @@ services:
       - key: JWT_SECRET
         sync: false
 
-  # 8. API Gateway (Entry Point)
+  # 8. Staff Service
+  - type: web
+    name: staff-service
+    env: node
+    rootDir: staff-service
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: AUTH_SERVICE_URL
+        fromService:
+          type: web
+          name: auth-service
+          property: host
+
+  # 9. API Gateway (Entry Point)
   - type: web
     name: api-gateway
     env: node
@@ -148,4 +168,9 @@ services:
         fromService:
           type: web
           name: enquiry-service
+          property: host
+      - key: STAFF_SERVICE_URL
+        fromService:
+          type: web
+          name: staff-service
           property: host
