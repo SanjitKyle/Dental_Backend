@@ -20,7 +20,8 @@ export const create = async (data) => {
 
     const finalRes = {
         ...data,
-        employeeuserId: authResponse.data._id || authResponse.data.data?._id
+        employeeuserId: authResponse._id
+
     }
 
 
@@ -32,11 +33,9 @@ export const findAll = async () => {
 export const findById = async (id) => {
     return await Staff.findById(id);
 };
-
 export const update = async (id, data) => {
     return await Staff.findByIdAndUpdate(id, data, { new: true, runValidators: true });
 };
-
 export const remove = async (id) => {
     return await Staff.findByIdAndDelete(id);
 };

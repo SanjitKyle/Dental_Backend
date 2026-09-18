@@ -15,28 +15,28 @@ app.use(cors({
 // Route to Auth Service
 app.use(createProxyMiddleware({
     pathFilter: '/api/auth',
-    target: 'http://127.0.0.1:5000',
+    target: 'http://127.0.0.1:5001',
     changeOrigin: true
 }));
 
 // Route to Patient Service
 app.use(createProxyMiddleware({
     pathFilter: '/api/patients',
-    target: 'http://127.0.0.1:5001',
+    target: 'http://127.0.0.1:5002',
     changeOrigin: true
 }));
 
 // Route to Doctor Service
 app.use(createProxyMiddleware({
     pathFilter: '/api/doctors',
-    target: 'http://127.0.0.1:5002',
+    target: 'http://127.0.0.1:5003',
     changeOrigin: true
 }));
 
 // Route to Appointment Service
 app.use(createProxyMiddleware({
     pathFilter: '/api/appointments',
-    target: 'http://127.0.0.1:5003',
+    target: 'http://127.0.0.1:5004',
     changeOrigin: true
 }));
 

@@ -20,9 +20,8 @@ module.exports = {
       script: "./auth-service/src/server.js",
       env: {
         PORT: 5001,
-        // Add your DB strings here or use a .env file in the auth-service folder
-        // MONGO_URI: "your_mongo_uri",
-        // JWT_SECRET: "your_secret"
+        MONGODB_URI: "mongodb+srv://kylefront74_db_user:VDYRaFw5PiEhnaFN@cluster0.h9cr4n4.mongodb.net/?appName=Cluster0",
+        JWT_SECRET: "HOSPITAL_MAN"
       }
     },
     {
@@ -30,7 +29,9 @@ module.exports = {
       script: "./patient-service/src/server.js",
       env: {
         PORT: 5002,
-        AUTH_SERVICE_URL: "http://127.0.0.1:5001/api/auth"
+        AUTH_SERVICE_URL: "http://127.0.0.1:5001/api/auth",
+        MONGODB_URI: "mongodb+srv://kylefront74_db_user:VDYRaFw5PiEhnaFN@cluster0.h9cr4n4.mongodb.net/?appName=Cluster0",
+        JWT_SECRET: "HOSPITAL_MAN"
       }
     },
     {
@@ -38,7 +39,9 @@ module.exports = {
       script: "./doctor-service/src/server.js",
       env: {
         PORT: 5003,
-        AUTH_SERVICE_URL: "http://127.0.0.1:5001/api/auth"
+        AUTH_SERVICE_URL: "http://127.0.0.1:5001/api/auth",
+        MONGODB_URI: "mongodb+srv://kylefront74_db_user:VDYRaFw5PiEhnaFN@cluster0.h9cr4n4.mongodb.net/?appName=Cluster0",
+        JWT_SECRET: "HOSPITAL_MAN"
       }
     },
     {
@@ -46,6 +49,8 @@ module.exports = {
       script: "./appointment-service/src/server.js",
       env: {
         PORT: 5004,
+        MONGODB_URI: "mongodb+srv://kylefront74_db_user:VDYRaFw5PiEhnaFN@cluster0.h9cr4n4.mongodb.net/?appName=Cluster0",
+        JWT_SECRET: "HOSPITAL_MAN"
       }
     },
     {
@@ -53,6 +58,8 @@ module.exports = {
       script: "./odontogram-service/src/server.js",
       env: {
         PORT: 5005,
+        MONGODB_URI: "mongodb+srv://kylefront74_db_user:VDYRaFw5PiEhnaFN@cluster0.h9cr4n4.mongodb.net/?appName=Cluster0",
+        JWT_SECRET: "HOSPITAL_MAN"
       }
     },
     {
@@ -60,6 +67,8 @@ module.exports = {
       script: "./prescription-service/src/server.js",
       env: {
         PORT: 5006,
+        MONGODB_URI: "mongodb+srv://kylefront74_db_user:VDYRaFw5PiEhnaFN@cluster0.h9cr4n4.mongodb.net/?appName=Cluster0",
+        JWT_SECRET: "HOSPITAL_MAN"
       }
     },
     {
@@ -67,6 +76,8 @@ module.exports = {
       script: "./enquiry-service/src/server.js",
       env: {
         PORT: 5007,
+        MONGODB_URI: "mongodb+srv://kylefront74_db_user:VDYRaFw5PiEhnaFN@cluster0.h9cr4n4.mongodb.net/?appName=Cluster0",
+        JWT_SECRET: "HOSPITAL_MAN"
       }
     },
     {
@@ -74,7 +85,9 @@ module.exports = {
       script: "./staff-service/src/server.js",
       env: {
         PORT: 5008,
-        AUTH_SERVICE_URL: "http://127.0.0.1:5001"
+        AUTH_SERVICE_URL: "http://127.0.0.1:5001/api/auth",
+        MONGODB_URI: "mongodb+srv://kylefront74_db_user:VDYRaFw5PiEhnaFN@cluster0.h9cr4n4.mongodb.net/?appName=Cluster0",
+        JWT_SECRET: "HOSPITAL_MAN"
       }
     }
   ]
