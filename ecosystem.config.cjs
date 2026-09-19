@@ -96,7 +96,7 @@ module.exports = {
     },
     {
       name: "staff-service",
-      script: "./staff-service/src/server.js",
+      script: "./staff-servcdice/src/server.js",
       env: {
         PORT: 5008,
         AUTH_SERVICE_URL: "http://127.0.0.1:5001/api/auth",
