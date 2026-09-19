@@ -2,7 +2,14 @@ import * as staffService from '../services/staff.service.js';
 
 export const createStaff = async (req, res) => {
     try {
-        const savedStaff = await staffService.createStaff(req.body);
+        const token = req.headers.authorization.split(" ")[1];
+        const userId = req.userId;
+        const data = {
+            ...req.body,
+            createdBy: userId
+
+        }
+        const savedStaff = await staffService.createStaff(data, token);
         res.status(201).json({ success: true, data: savedStaff });
     } catch (error) {
         const statusCode = error.statusCode || 400;

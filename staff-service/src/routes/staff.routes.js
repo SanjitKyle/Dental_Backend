@@ -6,6 +6,7 @@ import {
     updateStaff,
     deleteStaff
 } from '../controller/staff.controller.js';
+import AuthMiddleWare from '../Authmiddlewear/middlewear.js';
 
 const router = express.Router();
 
@@ -87,7 +88,7 @@ const router = express.Router();
  *       400:
  *         description: Bad request
  */
-router.post('/', createStaff);
+router.post('/',AuthMiddleWare, createStaff);
 
 /**
  * @swagger
@@ -105,7 +106,7 @@ router.post('/', createStaff);
  *               items:
  *                 $ref: '#/components/schemas/Staff'
  */
-router.get('/', getStaff);
+router.get('/', AuthMiddleWare,getStaff);
 
 /**
  * @swagger
@@ -130,7 +131,7 @@ router.get('/', getStaff);
  *       404:
  *         description: The staff was not found
  */
-router.get('/:id', getStaffById);
+router.get('/:id',AuthMiddleWare, getStaffById);
 
 /**
  * @swagger
@@ -159,7 +160,7 @@ router.get('/:id', getStaffById);
  *       400:
  *         description: Bad request
  */
-router.put('/:id', updateStaff);
+router.put('/:id',AuthMiddleWare, updateStaff);
 
 /**
  * @swagger
@@ -180,6 +181,6 @@ router.put('/:id', updateStaff);
  *       404:
  *         description: The staff was not found
  */
-router.delete('/:id', deleteStaff);
+router.delete('/:id',AuthMiddleWare, deleteStaff);
 
 export default router;

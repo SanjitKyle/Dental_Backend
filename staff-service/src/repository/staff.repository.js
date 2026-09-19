@@ -2,7 +2,7 @@ import Staff from '../model/Staff.model.js';
 import axios from 'axios'
 import dotenv from 'dotenv';
 dotenv.config()
-export const create = async (data) => {
+export const create = async (data,token) => {
     const { fullName, email } = data;
     const AuthData = {
         name: fullName,
@@ -11,7 +11,11 @@ export const create = async (data) => {
         password: "default123"
     }
     const authurl = process.env.AUTH_SERVICE_URL
-    const authResponse = await axios.post(`${authurl}/register`, AuthData);
+    const authResponse = await axios.post(`${authurl}/register`, AuthData,{
+        headers:{
+            authorization:`Bearer ${token}`
+        }
+    });
     if (!authResponse || !authResponse.data) {
         const error = new Error("Could not create auth profile");
         error.statusCode = 403;
@@ -20,7 +24,7 @@ export const create = async (data) => {
 
     const finalRes = {
         ...data,
-        employeeuserId: authResponse._id
+        employeeuserId: authResponse.data._id
 
     }
 

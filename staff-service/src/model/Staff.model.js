@@ -60,7 +60,7 @@ const staffSchema = new mongoose.Schema({
     },
     
     // 6. Audit
-    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Staff' }
+    createdBy: { type:String}
     
 }, { timestamps: true });
 

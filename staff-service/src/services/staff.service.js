@@ -1,8 +1,8 @@
 import * as staffRepository from '../repository/staff.repository.js';
 
-export const createStaff = async (data) => {
+export const createStaff = async (data,token) => {
     // Business logic or validation can be added here
-    return await staffRepository.create(data);
+    return await staffRepository.create(data,token);
 };
 
 export const getAllStaff = async () => {
