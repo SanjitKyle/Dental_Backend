@@ -24,7 +24,7 @@ export const create = async (data,token) => {
 
     const finalRes = {
         ...data,
-        employeeuserId: authResponse.data._id
+        employeeuserId: authResponse.data._id || null
 
     }
 

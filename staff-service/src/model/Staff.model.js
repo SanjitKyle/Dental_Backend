@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const staffSchema = new mongoose.Schema({
     // 1. Identity
-    employeeuserId: { type: String, required: true, unique: true }, // e.g., DEN-STF-001
+    employeeuserId: { type: String,  unique: true }, // e.g., DEN-STF-001
     fullName: { type: String, required: true, trim: true },
     email: { type: String, required: true, unique: true, lowercase: true },
     phoneNumber: { type: String, required: true },
