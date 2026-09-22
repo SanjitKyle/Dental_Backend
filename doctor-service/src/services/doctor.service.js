@@ -4,7 +4,7 @@ import * as DoctorRepository from '../repository/doctor.repository.js';
 export const createDoctor = async (doctorData) => {
     // 1. Create Auth Account first
     try {
-        const authUrl = process.env.AUTH_SERVICE_URL 
+        const authUrl = process.env.AUTH_SERVICE_URL || 'http://127.0.0.1:5001/api/auth';
 
         // We assume doctorData contains a 'password' field that the frontend sends
         const authPayload = {
@@ -17,8 +17,7 @@ export const createDoctor = async (doctorData) => {
         const authResponse = await axios.post(`${authUrl}/register`, authPayload);
 
         // Extract the generated userId from the auth response
-        // (Depends on how your auth service sends it back, typically authResponse.data.user._id or authResponse.data._id)
-        const newUserId = authResponse.data.data?._id || authResponse.data.user?._id || authResponse.data._id;
+        const newUserId = authResponse.data?.data?._id || authResponse.data?.user?._id || authResponse.data?._id;
 
         if (!newUserId) {
             throw new Error("Auth service did not return a valid userId");
@@ -27,6 +26,19 @@ export const createDoctor = async (doctorData) => {
         // 2. Attach the new userId to the doctor profile data and remove the password
         doctorData.userId = newUserId;
         delete doctorData.password;
+
+        // Ensure defaults for schema requirements
+        if (!doctorData.qualifications || !doctorData.qualifications.length) {
+            doctorData.qualifications = ["BDS"];
+        }
+        if (doctorData.experience_years !== undefined && doctorData.experience_years !== '') {
+            doctorData.experience_years = Number(doctorData.experience_years) || 0;
+        } else {
+            doctorData.experience_years = 0;
+        }
+        if (doctorData.consultation_fee !== undefined && doctorData.consultation_fee !== '') {
+            doctorData.consultation_fee = Number(doctorData.consultation_fee) || 0;
+        }
 
         // 3. Save the Doctor Profile in our database
         return await DoctorRepository.createDoctor(doctorData);

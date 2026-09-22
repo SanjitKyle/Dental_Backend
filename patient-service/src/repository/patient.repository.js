@@ -1,29 +1,30 @@
 import Patient from '../models/patient.js'; // Assuming Patient is exported as default from the model file
 import axios from 'axios'
 export const createPatient = async (patientData) => {
-    const {email , full_name}=patientData;
-    if (!email) {
-        throw new Error('Email is required to create a patient profile');
-    }
-    const existingPatient = await Patient.findOne({ email });
-    if(existingPatient){
-        throw new Error('Patient with this email already exists');
+    const { email, full_name } = patientData;
+    const cleanEmail = email && email.trim() ? email.trim().toLowerCase() : `patient_${Date.now()}_${Math.floor(Math.random() * 1000)}@clinic.local`;
+    
+    if (email && email.trim()) {
+        const existingPatient = await Patient.findOne({ email: cleanEmail });
+        if (existingPatient) {
+            throw new Error('Patient with this email already exists');
+        }
     }
     
     let userId;
     try {
-        const authUrl = process.env.AUTH_SERVICE_URL ;
-        const response=await axios.post(`${authUrl}/register`,{
-            name:full_name,
-            email:email,
-            password:'defaultPassword123',
-            role:'patient'
+        const authUrl = process.env.AUTH_SERVICE_URL || 'http://127.0.0.1:5001/api/auth';
+        const response = await axios.post(`${authUrl}/register`, {
+            name: full_name,
+            email: cleanEmail,
+            password: 'defaultPassword123',
+            role: 'patient'
         });
         
-        if(!response.data.success){
+        if (!response.data?.success && !response.data?.data) {
             throw new Error('Failed to create user in auth service');
         }
-        userId = response.data.data._id || response.data.data.id || response.data._id;
+        userId = response.data.data?._id || response.data.data?.id || response.data?._id;
         
         if (!userId) {
             throw new Error('Auth service did not return a valid userId');
@@ -33,7 +34,7 @@ export const createPatient = async (patientData) => {
         throw new Error("Failed to create Auth account for Patient: " + (error.response?.data?.message || error.message));
     }
 
-    const finalPatientData={...patientData, userId};
+    const finalPatientData = { ...patientData, email: cleanEmail, userId };
     const patient = new Patient(finalPatientData);
     return await patient.save();
 };

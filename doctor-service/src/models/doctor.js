@@ -4,6 +4,7 @@ const doctorSchema = new mongoose.Schema({
     // Links to the Auth Service so doctors can log in
     userId: {
         type: String,
+        sparse: true
     },
     full_name: {
         type: String
@@ -22,11 +23,19 @@ const doctorSchema = new mongoose.Schema({
     specialization: {
         type: String,
         required: true,
-        enum: ['General Dentist', 'Orthodontist', 'Endodontist', 'Pediatric Dentist', 'Oral Surgeon', 'Prosthodontist']
+        enum: [
+            'General Dentist', 'General Dentistry',
+            'Orthodontist', 'Orthodontics',
+            'Endodontist', 'Endodontics',
+            'Pediatric Dentist', 'Pediatric Dentistry',
+            'Oral Surgeon', 'Oral Surgery',
+            'Prosthodontist', 'Prosthodontics',
+            'Periodontist', 'Periodontics'
+        ]
     },
     qualifications: {
         type: [String], // Array of degrees e.g., ["BDS", "MDS"]
-        required: true
+        default: ['BDS']
     },
     experience_years: {
         type: Number,
