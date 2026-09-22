@@ -20,9 +20,9 @@ module.exports = {
       script: "./auth-service/src/server.js",
       env: {
         PORT: 5001,
-        MONGO_URI: "mongodb+srv://kylefront74_db_user:VDYRaFw5PiEhnaFN@cluster0.h9cr4n4.mongodb.net/?appName=Cluster0",
-        MONGODB_URI: "mongodb+srv://kylefront74_db_user:VDYRaFw5PiEhnaFN@cluster0.h9cr4n4.mongodb.net/?appName=Cluster0",
-        MONGO_URL: "mongodb+srv://kylefront74_db_user:VDYRaFw5PiEhnaFN@cluster0.h9cr4n4.mongodb.net/?appName=Cluster0",
+        MONGO_URI: "mongodb+srv://kylefront74_db_user:wJm1srU5gEBpEp4T@cluster0.70x8pux.mongodb.net/?appName=Cluster0",
+        MONGODB_URI: "mongodb+srv://kylefront74_db_user:wJm1srU5gEBpEp4T@cluster0.70x8pux.mongodb.net/?appName=Cluster0",
+        MONGO_URL: "mongodb+srv://kylefront74_db_user:wJm1srU5gEBpEp4T@cluster0.70x8pux.mongodb.net/?appName=Cluster0",
         JWT_SECRET: "HOSPITAL_MAN"
       }
     },
@@ -32,9 +32,9 @@ module.exports = {
       env: {
         PORT: 5002,
         AUTH_SERVICE_URL: "http://127.0.0.1:5001/api/auth",
-        MONGO_URI: "mongodb+srv://kylefront74_db_user:VDYRaFw5PiEhnaFN@cluster0.h9cr4n4.mongodb.net/?appName=Cluster0",
-        MONGODB_URI: "mongodb+srv://kylefront74_db_user:VDYRaFw5PiEhnaFN@cluster0.h9cr4n4.mongodb.net/?appName=Cluster0",
-        MONGO_URL: "mongodb+srv://kylefront74_db_user:VDYRaFw5PiEhnaFN@cluster0.h9cr4n4.mongodb.net/?appName=Cluster0",
+        MONGO_URI: "mongodb+srv://kylefront74_db_user:ZkVygiRH8VLigqmr@cluster0.o0leu0w.mongodb.net/?appName=Cluster0",
+        MONGODB_URI: "mongodb+srv://kylefront74_db_user:ZkVygiRH8VLigqmr@cluster0.o0leu0w.mongodb.net/?appName=Cluster0",
+        MONGO_URL: "mongodb+srv://kylefront74_db_user:ZkVygiRH8VLigqmr@cluster0.o0leu0w.mongodb.net/?appName=Cluster0",
         JWT_SECRET: "HOSPITAL_MAN"
       }
     },
@@ -55,9 +55,10 @@ module.exports = {
       script: "./appointment-service/src/server.js",
       env: {
         PORT: 5004,
-        MONGO_URI: "mongodb+srv://kylefront74_db_user:VDYRaFw5PiEhnaFN@cluster0.h9cr4n4.mongodb.net/?appName=Cluster0",
-        MONGODB_URI: "mongodb+srv://kylefront74_db_user:VDYRaFw5PiEhnaFN@cluster0.h9cr4n4.mongodb.net/?appName=Cluster0",
-        MONGO_URL: "mongodb+srv://kylefront74_db_user:VDYRaFw5PiEhnaFN@cluster0.h9cr4n4.mongodb.net/?appName=Cluster0",
+        AUTH_SERVICE_URL: "http://127.0.0.1:5001/api/auth",
+        MONGO_URI: "mongodb+srv://kylefront74_db_user:XHikuo2vQIZyYzNm@cluster0.ya4ys0e.mongodb.net/?appName=Cluster0",
+        MONGODB_URI: "mongodb+srv://kylefront74_db_user:XHikuo2vQIZyYzNm@cluster0.ya4ys0e.mongodb.net/?appName=Cluster0",
+        MONGO_URL: "mongodb+srv://kylefront74_db_user:XHikuo2vQIZyYzNm@cluster0.ya4ys0e.mongodb.net/?appName=Cluster0",
         JWT_SECRET: "HOSPITAL_MAN"
       }
     },
@@ -66,9 +67,10 @@ module.exports = {
       script: "./odontogram-service/src/server.js",
       env: {
         PORT: 5005,
-        MONGO_URI: "mongodb+srv://kylefront74_db_user:VDYRaFw5PiEhnaFN@cluster0.h9cr4n4.mongodb.net/?appName=Cluster0",
-        MONGODB_URI: "mongodb+srv://kylefront74_db_user:VDYRaFw5PiEhnaFN@cluster0.h9cr4n4.mongodb.net/?appName=Cluster0",
-        MONGO_URL: "mongodb+srv://kylefront74_db_user:VDYRaFw5PiEhnaFN@cluster0.h9cr4n4.mongodb.net/?appName=Cluster0",
+        AUTH_SERVICE_URL: "http://127.0.0.1:5001/api/auth",
+        MONGO_URI: "mongodb+srv://kylefront74_db_user:CypipLWSQhfxN9S3@cluster0.mmfi6to.mongodb.net/?appName=Cluster0",
+        MONGODB_URI: "mongodb+srv://kylefront74_db_user:CypipLWSQhfxN9S3@cluster0.mmfi6to.mongodb.net/?appName=Cluster0",
+        MONGO_URL: "mongodb+srv://kylefront74_db_user:CypipLWSQhfxN9S3@cluster0.mmfi6to.mongodb.net/?appName=Cluster0",
         JWT_SECRET: "HOSPITAL_MAN"
       }
     },
@@ -77,9 +79,10 @@ module.exports = {
       script: "./prescription-service/src/server.js",
       env: {
         PORT: 5006,
-        MONGO_URI: "mongodb+srv://kylefront74_db_user:VDYRaFw5PiEhnaFN@cluster0.h9cr4n4.mongodb.net/?appName=Cluster0",
-        MONGODB_URI: "mongodb+srv://kylefront74_db_user:VDYRaFw5PiEhnaFN@cluster0.h9cr4n4.mongodb.net/?appName=Cluster0",
-        MONGO_URL: "mongodb+srv://kylefront74_db_user:VDYRaFw5PiEhnaFN@cluster0.h9cr4n4.mongodb.net/?appName=Cluster0",
+        AUTH_SERVICE_URL: "http://127.0.0.1:5001/api/auth",
+        MONGO_URI: "mongodb+srv://kylefront74_db_user:GDiblD0CAuwEa6VF@cluster0.e2uivrm.mongodb.net/?appName=Cluster0",
+        MONGODB_URI: "mongodb+srv://kylefront74_db_user:GDiblD0CAuwEa6VF@cluster0.e2uivrm.mongodb.net/?appName=Cluster0",
+        MONGO_URL: "mongodb+srv://kylefront74_db_user:GDiblD0CAuwEa6VF@cluster0.e2uivrm.mongodb.net/?appName=Cluster0",
         JWT_SECRET: "HOSPITAL_MAN"
       }
     },
@@ -88,9 +91,10 @@ module.exports = {
       script: "./enquiry-service/src/server.js",
       env: {
         PORT: 5007,
-        MONGO_URI: "mongodb+srv://kylefront74_db_user:VDYRaFw5PiEhnaFN@cluster0.h9cr4n4.mongodb.net/?appName=Cluster0",
-        MONGODB_URI: "mongodb+srv://kylefront74_db_user:VDYRaFw5PiEhnaFN@cluster0.h9cr4n4.mongodb.net/?appName=Cluster0",
-        MONGO_URL: "mongodb+srv://kylefront74_db_user:VDYRaFw5PiEhnaFN@cluster0.h9cr4n4.mongodb.net/?appName=Cluster0",
+        AUTH_SERVICE_URL: "http://127.0.0.1:5001/api/auth",
+        MONGO_URI: "mongodb+srv://kylefront74_db_user:rab6qKjFEvAMo37N@cluster0.tzhialp.mongodb.net/?appName=Cluster0",
+        MONGODB_URI: "mongodb+srv://kylefront74_db_user:rab6qKjFEvAMo37N@cluster0.tzhialp.mongodb.net/?appName=Cluster0",
+        MONGO_URL: "mongodb+srv://kylefront74_db_user:rab6qKjFEvAMo37N@cluster0.tzhialp.mongodb.net/?appName=Cluster0",
         JWT_SECRET: "HOSPITAL_MAN"
       }
     },
@@ -100,9 +104,9 @@ module.exports = {
       env: {
         PORT: 5008,
         AUTH_SERVICE_URL: "http://127.0.0.1:5001/api/auth",
-        MONGO_URI: "mongodb+srv://kylefront74_db_user:VDYRaFw5PiEhnaFN@cluster0.h9cr4n4.mongodb.net/?appName=Cluster0",
-        MONGODB_URI: "mongodb+srv://kylefront74_db_user:VDYRaFw5PiEhnaFN@cluster0.h9cr4n4.mongodb.net/?appName=Cluster0",
-        MONGO_URL: "mongodb+srv://kylefront74_db_user:VDYRaFw5PiEhnaFN@cluster0.h9cr4n4.mongodb.net/?appName=Cluster0",
+        MONGO_URI: "mongodb+srv://kylefront74_db_user:iw5HkUP9sQRZcyp9@cluster0.3pdjxc9.mongodb.net/?appName=Cluster0",
+        MONGODB_URI: "mongodb+srv://kylefront74_db_user:iw5HkUP9sQRZcyp9@cluster0.3pdjxc9.mongodb.net/?appName=Cluster0",
+        MONGO_URL: "mongodb+srv://kylefront74_db_user:iw5HkUP9sQRZcyp9@cluster0.3pdjxc9.mongodb.net/?appName=Cluster0",
         JWT_SECRET: "HOSPITAL_MAN"
       }
     }
