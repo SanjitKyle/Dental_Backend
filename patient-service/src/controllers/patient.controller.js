@@ -4,7 +4,7 @@ export const createPatientProfile = async (req, res) => {
     try {
         const patientData = req.body;
         const created_by = req.userId;
-        
+
         const newPatient = await patientService.createProfile({ ...patientData, created_by });
         res.status(201).json({ message: 'Patient profile created successfully', data: newPatient });
     } catch (error) {
@@ -36,10 +36,35 @@ export const updatePatientProfile = async (req, res) => {
 
 export const getAllPatients = async (req, res) => {
     try {
-        const userId=req.userId;
+        const userId = req.userId;
         const patients = await patientService.getAllProfiles(userId);
         res.status(200).json({ data: patients });
     } catch (error) {
         res.status(500).json({ message: error.message || 'Internal server error' });
     }
 };
+
+export const DeletePatients = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const response = await patientService.deletePatientById(id);
+        if (!response) {
+            return res.status(403).json({
+                message: "Could not delete patients",
+                success: false
+            })
+        }
+        return res.status(200).json({
+            message: "Successfully delete patients",
+            success: true
+        })
+
+
+    } catch (error) {
+        return res.status(500).json({
+            message: "Internal server error",
+            success: false,
+            error: error
+        })
+    }
+}

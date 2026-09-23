@@ -54,3 +54,13 @@ export const updatePatient = async (id, updateData) => {
 export const getAllPatients = async (createdId) => {
     return await Patient.find({created_by:createdId});
 };
+export const deletePatient=async(id)=>{
+    try{
+        const res=await Patient.findByIdAndDelete(id);
+        return res;
+
+    }catch(error)
+    {
+        throw error;
+    }
+}

@@ -25,3 +25,13 @@ export const updateProfile = async (id, data) => {
 export const getAllProfiles = async (userId) => {
     return await patientRepository.getAllPatients(userId);
 };
+export const deletePatientById=async(id)=>{
+    try{
+        const response=await patientRepository.deletePatient(id);
+        return response
+
+    }catch(error)
+    {
+        throw error;
+    }
+}

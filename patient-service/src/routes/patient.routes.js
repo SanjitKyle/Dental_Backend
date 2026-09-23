@@ -3,7 +3,8 @@ import {
     createPatientProfile, 
     getPatientProfile, 
     updatePatientProfile, 
-    getAllPatients 
+    getAllPatients, 
+    DeletePatients
 } from '../controllers/patient.controller.js';
 import authMiddleware from '../middleware/index.js'; // Assuming auth middleware exists
 
@@ -150,5 +151,6 @@ router.get('/:id', getPatientProfile);
  *         description: Profile not found
  */
 router.post('/:id', authMiddleware, updatePatientProfile);
+router.post("/delete/:id",authMiddleware,DeletePatients)
 
 export default router;
