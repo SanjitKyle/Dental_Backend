@@ -13,10 +13,13 @@ export const createAppointment=async(data)=>{
     }
 }
 
-export const getAppointments = async (query = {}) => {
+export const getAppointments = async ({query={},skip=0,limit=10}) => {
     try {
-        const response = await appointMent.find(query);
-        return response;
+        const [appointments, total]=await Promise.all([
+            appointMent.find(query).sort({createdAt:-1}).skip(skip).limit(limit),
+            appointMent.countDocuments(query)
+        ])
+        return {appointments,total};
     } catch (error) {
         throw error;
     }

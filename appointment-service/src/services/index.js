@@ -11,10 +11,10 @@ export const createAppointment=async(data)=>{
     }
 }
 
-export const getAppointments = async (query = {}) => {
+export const getAppointments = async ({ query = {}, skip = 0, limit = 10} ) => {
     try {
-        const response = await repository.getAppointments(query);
-        return response;
+        const {appointments, total} = await repository.getAppointments({ query , skip , limit });
+        return {appointments, total}
     } catch (error) {
         throw error;
     }

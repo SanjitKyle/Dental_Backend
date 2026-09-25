@@ -18,6 +18,7 @@ export const Auth = async (req, res, next) => {
         const decode = jwt.verify(token, secret);
         const userId = decode?._id || decode?.id || decode?.userId;
         req.userId = userId;
+        req.userRole = decode?.role;
         next();
 
     } catch (error) {
