@@ -96,6 +96,9 @@ const EnquirySchema = new mongoose.Schema({
     lastUpdatedBy: {
         type: String,
         default: 'system'
+    },
+    internal_notes:{
+        type:String
     }
 }, {
     timestamps: true

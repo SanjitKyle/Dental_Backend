@@ -48,15 +48,13 @@ export const createDoctor = async (doctorData) => {
         throw new Error("Failed to create Auth account for Doctor: " + (error.response?.data?.message || error.message));
     }
 };
-
-export const getAllDoctors = async (query) => {
-    return await DoctorRepository.getAllDoctors(query);
+export const getAllDoctors = async ({query,limit=0,skip=0}) => {
+    const {doctors, total}= await DoctorRepository.getAllDoctors({query,limit,skip});
+    return {doctors, total}
 };
-
 export const getDoctorById = async (id) => {
     return await DoctorRepository.getDoctorById(id);
 };
-
 export const getDoctorFullProfile = async (userId) => {
     // 1. Fetch from Doctor Database
     const doctorInfo = await DoctorRepository.getDoctorByUserId(userId);
@@ -80,11 +78,9 @@ export const getDoctorFullProfile = async (userId) => {
         auth_details: authInfo ? authInfo : "Auth details unavailable"
     };
 };
-
 export const updateDoctor = async (id, updateData) => {
     return await DoctorRepository.updateDoctor(id, updateData);
 };
-
 export const deleteDoctor = async (id) => {
     return await DoctorRepository.deleteDoctor(id);
 };

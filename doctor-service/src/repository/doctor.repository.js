@@ -13,8 +13,12 @@ export const getDoctorByUserId = async (userId) => {
     return await Doctor.findOne({ userId });
 };
 
-export const getAllDoctors = async (query = {}) => {
-    return await Doctor.find(query);
+export const getAllDoctors = async ({query,limit=0,skip=0}) => {
+   const [doctors, total]=await Promise.all([
+    Doctor.find(query).sort({createdAt:-1}).skip(skip).limit(limit),
+    Doctor.countDocuments(query)
+   ]);
+   return {doctors, total}
 };
 
 export const updateDoctor = async (id, updateData) => {

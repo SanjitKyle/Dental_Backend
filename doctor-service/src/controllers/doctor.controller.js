@@ -15,9 +15,27 @@ export const createDoctor = async (req, res) => {
 // Get all Doctors (with optional filtering by specialization or status)
 export const getAllDoctors = async (req, res) => {
     try {
-        const query = req.query; // e.g. ?specialization=Orthodontist
-        const doctors = await DoctorService.getAllDoctors(query);
-        res.status(200).json({ data: doctors });
+        const { page: rawPage, limit: rawLimit, offset: rawOffset, ...filterQuery } = req.query;
+        const page = Math.max(1, parseInt(rawPage, 10) || 1);
+        const limit = Math.max(1, parseInt(rawLimit, 10) || 10);
+        const offset = rawOffset !== undefined ? Math.max(0, parseInt(rawOffset, 10) || 0) : (page - 1) * limit;
+
+        const { doctors, total } = await DoctorService.getAllDoctors({ query: filterQuery, limit, skip: offset });
+        res.status(200).json({
+            success:true,
+            data: doctors,
+            pagination:{
+                total,
+                page,
+                limit,
+                offset,
+                totalPages:Math.ceil(total/limit),
+                hasNextPage:offset+limit<total,
+                hasPrevPage:page>1
+
+
+            }
+         });
     } catch (error) {
         console.error("Error fetching doctors:", error);
         res.status(500).json({ message: "Failed to fetch doctors", error: error.message });
