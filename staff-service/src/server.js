@@ -9,6 +9,8 @@ import dotenv from 'dotenv';
 import Connection from './config/MongoDb.js';
 import { setupSwagger } from './config/swagger.js';
 import staffRoutes from './routes/staff.routes.js';
+import AppError from './utils/AppError.js';
+import globalErrorHandler from './middleware/error.middleware.js';
 
 dotenv.config();
 const App = express();
@@ -22,7 +24,23 @@ const PORT = process.env.PORT || 5008;
 App.use('/api/staff', staffRoutes);
 setupSwagger(App);
 
-App.listen(PORT, () => {
+// 1. Catch unhandled routes (404)
+App.all('*', (req, res, next) => {
+    next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+});
+
+// 2. Global Centralized Error Handling Middleware
+App.use(globalErrorHandler);
+
+const server = App.listen(PORT, () => {
     console.log(`Server is running at ${PORT}`);
     Connection();
+});
+
+// 3. Graceful shutdown on unhandled rejections
+process.on('unhandledRejection', (err) => {
+    console.error('UNHANDLED REJECTION! 💥', err.name, err.message);
+    server.close(() => {
+        process.exit(1);
+    });
 });

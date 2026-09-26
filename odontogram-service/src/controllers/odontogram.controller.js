@@ -1,190 +1,128 @@
 import * as odontogramService from '../services/odontogram.service.js';
+import catchAsync from '../utils/catchAsync.js';
 
-export const getAllOdontograms = async (req, res) => {
-    try {
-        const result = await odontogramService.getAllOdontograms(req.query);
-        res.status(200).json({
-            success: true,
-            data: result.odontograms,
-            pagination: {
-                total: result.total,
-                page: result.page,
-                limit: result.limit,
-                offset: result.offset,
-                totalPages: result.totalPages,
-                hasNextPage: result.hasNextPage,
-                hasPrevPage: result.hasPrevPage
-            }
-        });
-    } catch (error) {
-        res.status(400).json({
-            success: false,
-            message: error.message || 'Failed to fetch odontograms'
-        });
-    }
-};
-
-export const getPatientOdontogram = async (req, res) => {
-    try {
-        const { patientId } = req.params;
-        const { dentitionType, doctorId } = req.query;
-        const userId = req.userId;
-
-        const odontogram = await odontogramService.getOrCreatePatientOdontogram(patientId, {
-            dentitionType,
-            doctorId,
-            userId
-        });
-
-        res.status(200).json({
-            success: true,
-            message: 'Odontogram retrieved successfully',
-            data: odontogram
-        });
-    } catch (error) {
-        res.status(400).json({
-            success: false,
-            message: error.message || 'Failed to fetch odontogram'
-        });
-    }
-};
-
-export const createOdontogram = async (req, res) => {
-    try {
-        const userId = req.userId;
-        const newOdontogram = await odontogramService.createOdontogram(req.body, userId);
-
-        res.status(201).json({
-            success: true,
-            message: 'Odontogram created successfully',
-            data: newOdontogram
-        });
-    } catch (error) {
-        res.status(400).json({
-            success: false,
-            message: error.message || 'Failed to create odontogram'
-        });
-    }
-};
-
-export const updatePatientOdontogram = async (req, res) => {
-    try {
-        const { patientId } = req.params;
-        const userId = req.userId;
-
-        const updated = await odontogramService.updatePatientOdontogram(patientId, req.body, userId);
-        res.status(200).json({
-            success: true,
-            message: 'Odontogram updated successfully',
-            data: updated
-        });
-    } catch (error) {
-        res.status(400).json({
-            success: false,
-            message: error.message || 'Failed to update odontogram'
-        });
-    }
-};
-
-export const updateTooth = async (req, res) => {
-    try {
-        const { patientId, toothNumber } = req.params;
-        const userId = req.userId;
-
-        const updated = await odontogramService.updateTooth(patientId, toothNumber, req.body, userId);
-        res.status(200).json({
-            success: true,
-            message: `Tooth ${toothNumber} updated successfully`,
-            data: updated
-        });
-    } catch (error) {
-        res.status(400).json({
-            success: false,
-            message: error.message || 'Failed to update tooth'
-        });
-    }
-};
-
-export const addProcedure = async (req, res) => {
-    try {
-        const { patientId } = req.params;
-        const { toothNumber, ...procedureData } = req.body;
-        const toothNum = toothNumber || req.params.toothNumber;
-
-        if (!toothNum) {
-            return res.status(400).json({
-                success: false,
-                message: 'toothNumber is required'
-            });
+export const getAllOdontograms = catchAsync(async (req, res) => {
+    const result = await odontogramService.getAllOdontograms(req.query);
+    res.status(200).json({
+        success: true,
+        data: result.odontograms,
+        pagination: {
+            total: result.total,
+            page: result.page,
+            limit: result.limit,
+            offset: result.offset,
+            totalPages: result.totalPages,
+            hasNextPage: result.hasNextPage,
+            hasPrevPage: result.hasPrevPage
         }
+    });
+});
 
-        const userId = req.userId;
-        const updated = await odontogramService.addProcedure(patientId, toothNum, procedureData, userId);
+export const getPatientOdontogram = catchAsync(async (req, res) => {
+    const { patientId } = req.params;
+    const { dentitionType, doctorId } = req.query;
+    const userId = req.userId;
 
-        res.status(200).json({
-            success: true,
-            message: 'Procedure added successfully',
-            data: updated
-        });
-    } catch (error) {
-        res.status(400).json({
+    const odontogram = await odontogramService.getOrCreatePatientOdontogram(patientId, {
+        dentitionType,
+        doctorId,
+        userId
+    });
+
+    res.status(200).json({
+        success: true,
+        message: 'Odontogram retrieved successfully',
+        data: odontogram
+    });
+});
+
+export const createOdontogram = catchAsync(async (req, res) => {
+    const userId = req.userId;
+    const newOdontogram = await odontogramService.createOdontogram(req.body, userId);
+
+    res.status(201).json({
+        success: true,
+        message: 'Odontogram created successfully',
+        data: newOdontogram
+    });
+});
+
+export const updatePatientOdontogram = catchAsync(async (req, res) => {
+    const { patientId } = req.params;
+    const userId = req.userId;
+
+    const updated = await odontogramService.updatePatientOdontogram(patientId, req.body, userId);
+    res.status(200).json({
+        success: true,
+        message: 'Odontogram updated successfully',
+        data: updated
+    });
+});
+
+export const updateTooth = catchAsync(async (req, res) => {
+    const { patientId, toothNumber } = req.params;
+    const userId = req.userId;
+
+    const updated = await odontogramService.updateTooth(patientId, toothNumber, req.body, userId);
+    res.status(200).json({
+        success: true,
+        message: `Tooth ${toothNumber} updated successfully`,
+        data: updated
+    });
+});
+
+export const addProcedure = catchAsync(async (req, res) => {
+    const { patientId } = req.params;
+    const { toothNumber, ...procedureData } = req.body;
+    const toothNum = toothNumber || req.params.toothNumber;
+
+    if (!toothNum) {
+        return res.status(400).json({
             success: false,
-            message: error.message || 'Failed to add procedure'
+            message: 'toothNumber is required'
         });
     }
-};
 
-export const resetTooth = async (req, res) => {
-    try {
-        const { patientId, toothNumber } = req.params;
-        const userId = req.userId;
+    const userId = req.userId;
+    const updated = await odontogramService.addProcedure(patientId, toothNum, procedureData, userId);
 
-        const updated = await odontogramService.resetTooth(patientId, toothNumber, userId);
-        res.status(200).json({
-            success: true,
-            message: `Tooth ${toothNumber} reset to sound condition`,
-            data: updated
-        });
-    } catch (error) {
-        res.status(400).json({
-            success: false,
-            message: error.message || 'Failed to reset tooth'
-        });
-    }
-};
+    res.status(200).json({
+        success: true,
+        message: 'Procedure added successfully',
+        data: updated
+    });
+});
 
-export const getSummary = async (req, res) => {
-    try {
-        const { patientId } = req.params;
-        const summary = await odontogramService.getSummaryStatistics(patientId);
+export const resetTooth = catchAsync(async (req, res) => {
+    const { patientId, toothNumber } = req.params;
+    const userId = req.userId;
 
-        res.status(200).json({
-            success: true,
-            message: 'Odontogram summary retrieved successfully',
-            data: summary
-        });
-    } catch (error) {
-        res.status(400).json({
-            success: false,
-            message: error.message || 'Failed to retrieve summary'
-        });
-    }
-};
+    const updated = await odontogramService.resetTooth(patientId, toothNumber, userId);
+    res.status(200).json({
+        success: true,
+        message: `Tooth ${toothNumber} reset to sound condition`,
+        data: updated
+    });
+});
 
-export const getHistory = async (req, res) => {
-    try {
-        const { patientId } = req.params;
-        const history = await odontogramService.getAuditHistory(patientId);
+export const getSummary = catchAsync(async (req, res) => {
+    const { patientId } = req.params;
+    const summary = await odontogramService.getSummaryStatistics(patientId);
 
-        res.status(200).json({
-            success: true,
-            message: 'Odontogram audit history retrieved successfully',
-            data: history
-        });
-    } catch (error) {
-        res.status(400).json({
-            success: false,
-            message: error.message || 'Failed to fetch history'
-        });
-    }
-};
+    res.status(200).json({
+        success: true,
+        message: 'Odontogram summary retrieved successfully',
+        data: summary
+    });
+});
+
+export const getHistory = catchAsync(async (req, res) => {
+    const { patientId } = req.params;
+    const history = await odontogramService.getAuditHistory(patientId);
+
+    res.status(200).json({
+        success: true,
+        message: 'Odontogram audit history retrieved successfully',
+        data: history
+    });
+});

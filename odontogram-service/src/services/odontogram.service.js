@@ -1,4 +1,5 @@
 import * as odontogramRepo from '../repository/odontogram.repository.js';
+import AppError from '../utils/AppError.js';
 import {
     PERMANENT_TEETH,
     DECIDUOUS_TEETH
@@ -123,7 +124,7 @@ export const createOdontogram = async (data, userId) => {
     const { patientId, dentitionType = 'permanent' } = data;
     const existing = await odontogramRepo.findByPatientId(patientId);
     if (existing) {
-        throw new Error(`Active odontogram already exists for patient ${patientId}`);
+        throw new AppError(`Active odontogram already exists for patient ${patientId}`, 409);
     }
 
     const teeth = (data.teeth && data.teeth.length > 0) ? data.teeth : buildDefaultTeeth(dentitionType);
@@ -149,7 +150,7 @@ export const createOdontogram = async (data, userId) => {
 export const updatePatientOdontogram = async (patientId, updateData, userId) => {
     const existing = await odontogramRepo.findByPatientId(patientId);
     if (!existing) {
-        throw new Error(`Odontogram not found for patient ${patientId}`);
+        throw new AppError(`Odontogram not found for patient ${patientId}`, 404);
     }
 
     const historyEntry = {
@@ -175,10 +176,9 @@ export const updatePatientOdontogram = async (patientId, updateData, userId) => 
 export const updateTooth = async (patientId, toothNumber, toothUpdates, userId) => {
     const existing = await odontogramRepo.findByPatientId(patientId);
     if (!existing) {
-        throw new Error(`Odontogram not found for patient ${patientId}`);
+        throw new AppError(`Odontogram not found for patient ${patientId}`, 404);
     }
 
-    // Auto-adjust boolean flags if condition indicates specific treatments
     const finalUpdates = { ...toothUpdates };
     if (finalUpdates.condition === 'missing' || finalUpdates.condition === 'extracted') {
         finalUpdates.isMissing = true;
@@ -204,7 +204,7 @@ export const updateTooth = async (patientId, toothNumber, toothUpdates, userId) 
 
     const result = await odontogramRepo.updateToothByNumber(patientId, toothNumber, finalUpdates, historyEntry);
     if (!result) {
-        throw new Error('Failed to update tooth state');
+        throw new AppError('Failed to update tooth state', 400);
     }
     return result;
 };
@@ -215,7 +215,7 @@ export const updateTooth = async (patientId, toothNumber, toothUpdates, userId) 
 export const addProcedure = async (patientId, toothNumber, procedureData, userId) => {
     const existing = await odontogramRepo.findByPatientId(patientId);
     if (!existing) {
-        throw new Error(`Odontogram not found for patient ${patientId}`);
+        throw new AppError(`Odontogram not found for patient ${patientId}`, 404);
     }
 
     const historyEntry = {
@@ -228,7 +228,7 @@ export const addProcedure = async (patientId, toothNumber, procedureData, userId
 
     const result = await odontogramRepo.addProcedureToTooth(patientId, toothNumber, procedureData, historyEntry);
     if (!result) {
-        throw new Error('Failed to add procedure');
+        throw new AppError('Failed to add procedure', 400);
     }
     return result;
 };
@@ -239,7 +239,7 @@ export const addProcedure = async (patientId, toothNumber, procedureData, userId
 export const resetTooth = async (patientId, toothNumber, userId) => {
     const existing = await odontogramRepo.findByPatientId(patientId);
     if (!existing) {
-        throw new Error(`Odontogram not found for patient ${patientId}`);
+        throw new AppError(`Odontogram not found for patient ${patientId}`, 404);
     }
 
     const historyEntry = {
@@ -252,7 +252,7 @@ export const resetTooth = async (patientId, toothNumber, userId) => {
 
     const result = await odontogramRepo.resetToothState(patientId, toothNumber, historyEntry);
     if (!result) {
-        throw new Error('Failed to reset tooth');
+        throw new AppError('Failed to reset tooth', 400);
     }
     return result;
 };
@@ -263,7 +263,7 @@ export const resetTooth = async (patientId, toothNumber, userId) => {
 export const getSummaryStatistics = async (patientId) => {
     const odontogram = await odontogramRepo.findByPatientId(patientId);
     if (!odontogram) {
-        throw new Error(`Odontogram not found for patient ${patientId}`);
+        throw new AppError(`Odontogram not found for patient ${patientId}`, 404);
     }
 
     let decayedCount = 0;

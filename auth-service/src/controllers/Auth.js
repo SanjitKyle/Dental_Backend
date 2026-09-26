@@ -1,70 +1,58 @@
-
 import bcrypt from 'bcryptjs';
 import { GetUserByEmail, RegisterNewUser } from "../repository/user.js";
 import generateToken from "../utils/jwt.js";
-export const RegisterUser = async (req, res) => {
-    try {
-        const { name, email, password, role } = req.body;
-        const existingUser = await GetUserByEmail(email);
+import AppError from "../utils/AppError.js";
+import catchAsync from "../utils/catchAsync.js";
 
-        if (existingUser) {
-            return res.status(400).json({
-                message: "user already exists with this email",
-                success: false
-            })
-        }
-        const newUser = await RegisterNewUser({ name, email, password, role });
-        console.log('new user ', newUser);
-        return res.status(201).json({
-            message: "user registered successfully",
-            success: true,
-            data: newUser
-        })
+export const RegisterUser = catchAsync(async (req, res) => {
+    const { name, email, password, role } = req.body;
 
-    } catch (error) {
-        console.log('error', error);
-        return res.status(500).json({
-            message: "Internal server error",
-            success: false
-        })
+    if (!email || !password) {
+        throw new AppError("Email and password are required", 400);
     }
-}
-export const LoginUser=async(req,res)=>{
-    try{
-        const {email,password}=req.body;
-        const existingUser=await GetUserByEmail(email);
-        if(!existingUser)
-        {
-            return res.status(400).json({
-                message:"user does not exist with this email",
-                success:false
-            })
-        }
-        
-        const isPasswordValid = await bcrypt.compare(password, existingUser.password);
-        if (!isPasswordValid) {
-            return res.status(401).json({
-                message: "Invalid email or password",
-                success: false
-            });
-        }
-        const token=await generateToken({_id:existingUser._id,email:existingUser.email,role:existingUser.role});
 
-        return res.status(200).json({
-            message:"user logged in successfully",
-            success:true,
-            data:{
-                token,
-                user:existingUser
-            }
-        })
-
-    }catch(error)
-    {
-        console.log('error',error);
-        return res.status(500).json({
-            message:"Internal server error",
-            success:false
-        })
+    const existingUser = await GetUserByEmail(email);
+    if (existingUser) {
+        throw new AppError("User already exists with this email", 409);
     }
-}
+
+    const newUser = await RegisterNewUser({ name, email, password, role });
+    res.status(201).json({
+        success: true,
+        message: "User registered successfully",
+        data: newUser
+    });
+});
+
+export const LoginUser = catchAsync(async (req, res) => {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+        throw new AppError("Please provide email and password", 400);
+    }
+
+    const existingUser = await GetUserByEmail(email);
+    if (!existingUser) {
+        throw new AppError("Invalid email or password", 401);
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, existingUser.password);
+    if (!isPasswordValid) {
+        throw new AppError("Invalid email or password", 401);
+    }
+
+    const token = await generateToken({
+        _id: existingUser._id,
+        email: existingUser.email,
+        role: existingUser.role
+    });
+
+    res.status(200).json({
+        success: true,
+        message: "User logged in successfully",
+        data: {
+            token,
+            user: existingUser
+        }
+    });
+});

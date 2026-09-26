@@ -1,12 +1,13 @@
 import * as enquiryRepo from '../repository/enquiry.repository.js';
+import AppError from '../utils/AppError.js';
 import axios from 'axios';
 
 export const createEnquiry = async (data, userId = null) => {
     if (!data.name || !data.name.trim()) {
-        throw new Error('Name is required');
+        throw new AppError('Name is required', 400);
     }
     if (!data.phone || !data.phone.trim()) {
-        throw new Error('Phone number is required');
+        throw new AppError('Phone number is required', 400);
     }
 
     const payload = {
@@ -100,40 +101,37 @@ export const getEnquiries = async (query = {}) => {
 export const getEnquiryById = async (id) => {
     const enquiry = await enquiryRepo.findById(id);
     if (!enquiry) {
-        throw new Error('Enquiry not found');
+        throw new AppError('Enquiry not found', 404);
     }
     return enquiry;
 };
 
-export const updateEnquiry = async (id, updateData, userId,token) => {
+export const updateEnquiry = async (id, updateData, userId, token) => {
     const existing = await enquiryRepo.findById(id);
     if (!existing) {
-        throw new Error('Enquiry not found');
+        throw new AppError('Enquiry not found', 404);
     }
 
-    const {status}=updateData;
-   
-        if (status === 'Converted') {
-            const patientsData = {
-                full_name: existing.name,
-                gender: existing.gender || 'Other',
-                phone: Number(existing.phone) || undefined,
-                email: existing.email || undefined,
-                address: existing.address || undefined
-            };
+    const { status } = updateData;
 
-            const patientServiceUrl = process.env.PATIENT_SERVICE_URL || 'https://dentalbackend.kyleinfotech.co.in/api/patients';
-            try {
-                await axios.post(patientServiceUrl, patientsData, {
-                    headers: {
-                        authorization: `Bearer ${token}`
-                    }
-                });
-            } catch (patientErr) {
-                console.warn('Patient creation during status conversion failed:', patientErr.message);
-            }
+    if (status === 'Converted') {
+        const patientsData = {
+            full_name: existing.name,
+            gender: existing.gender || 'Other',
+            phone: Number(existing.phone) || undefined,
+            email: existing.email || undefined,
+            address: existing.address || undefined
+        };
+
+        const patientServiceUrl = process.env.PATIENT_SERVICE_URL || 'http://127.0.0.1:5001/api/patients';
+        try {
+            await axios.post(patientServiceUrl, patientsData, {
+                headers: { authorization: `Bearer ${token}` }
+            });
+        } catch (patientErr) {
+            console.warn('Patient creation during status conversion failed:', patientErr.message);
         }
-
+    }
 
     const payload = {
         ...updateData,
@@ -143,73 +141,65 @@ export const updateEnquiry = async (id, updateData, userId,token) => {
     return await enquiryRepo.updateById(id, payload);
 };
 
-
 export const updateStatus = async (enquiryId, status, userId, token) => {
-    try {
-        const getExisting = await enquiryRepo.findById(enquiryId);
-        if (!getExisting) {
-            throw new Error('Enquiry not found');
-        }
-
-        const validStatuses = [
-            'New',
-            'Contacted',
-            'Follow-up Needed',
-            'Appointment Booked',
-            'Converted',
-            'Lost',
-            'Closed'
-        ];
-
-        if (!validStatuses.includes(status)) {
-            throw new Error(`Invalid status. Must be one of: ${validStatuses.join(', ')}`);
-        }
-
-        if (status === 'Converted') {
-            const patientsData = {
-                full_name: getExisting.name,
-                gender: getExisting.gender || 'Other',
-                phone: Number(getExisting.phone) || undefined,
-                email: getExisting.email || undefined,
-                address: getExisting.address || undefined
-            };
-
-            const patientServiceUrl = process.env.PATIENT_SERVICE_URL || 'https://dentalbackend.kyleinfotech.co.in/api/patients';
-            try {
-                await axios.post(patientServiceUrl, patientsData, {
-                    headers: {
-                        authorization: `Bearer ${token}`
-                    }
-                });
-            } catch (patientErr) {
-                console.warn('Patient creation during status conversion failed:', patientErr.message);
-            }
-        }
-
-        const updated = await enquiryRepo.updateStatus(enquiryId, status, userId);
-        if (!updated) {
-            throw new Error('Status could not be updated');
-        }
-        return updated;
-    } catch (error) {
-        throw error;
+    const getExisting = await enquiryRepo.findById(enquiryId);
+    if (!getExisting) {
+        throw new AppError('Enquiry not found', 404);
     }
+
+    const validStatuses = [
+        'New',
+        'Contacted',
+        'Follow-up Needed',
+        'Appointment Booked',
+        'Converted',
+        'Lost',
+        'Closed'
+    ];
+
+    if (!validStatuses.includes(status)) {
+        throw new AppError(`Invalid status. Must be one of: ${validStatuses.join(', ')}`, 400);
+    }
+
+    if (status === 'Converted') {
+        const patientsData = {
+            full_name: getExisting.name,
+            gender: getExisting.gender || 'Other',
+            phone: Number(getExisting.phone) || undefined,
+            email: getExisting.email || undefined,
+            address: getExisting.address || undefined
+        };
+
+        const patientServiceUrl = process.env.PATIENT_SERVICE_URL || 'http://127.0.0.1:5001/api/patients';
+        try {
+            await axios.post(patientServiceUrl, patientsData, {
+                headers: { authorization: `Bearer ${token}` }
+            });
+        } catch (patientErr) {
+            console.warn('Patient creation during status conversion failed:', patientErr.message);
+        }
+    }
+
+    const updated = await enquiryRepo.updateStatus(enquiryId, status, userId);
+    if (!updated) {
+        throw new AppError('Status could not be updated', 400);
+    }
+    return updated;
 };
 
 export const convertEnquiry = async (id, conversionData = {}, userId, token) => {
     const existing = await enquiryRepo.findById(id);
     if (!existing) {
-        throw new Error('Enquiry not found');
+        throw new AppError('Enquiry not found', 404);
     }
 
     const { convertedPatientId, convertedAppointmentId, createPatient = false } = conversionData;
     let finalPatientId = convertedPatientId || existing.convertedPatientId;
 
-    // Optional auto-creation in patient-service
     if (createPatient && !finalPatientId && token) {
         try {
-            const patientServiceUrl = process.env.PATIENT_SERVICE_URL || 'https://patient-service-8t30.onrender.com';
-            const response = await axios.post(`${patientServiceUrl}/api/patients`, {
+            const patientServiceUrl = process.env.PATIENT_SERVICE_URL || 'http://127.0.0.1:5001/api/patients';
+            const response = await axios.post(patientServiceUrl, {
                 full_name: existing.name,
                 phone: Number(existing.phone) || undefined,
                 email: existing.email,
@@ -236,12 +226,10 @@ export const convertEnquiry = async (id, conversionData = {}, userId, token) => 
     return await enquiryRepo.updateById(id, updatePayload);
 };
 
-
-
 export const deleteEnquiry = async (id) => {
     const existing = await enquiryRepo.findById(id);
     if (!existing) {
-        throw new Error('Enquiry not found');
+        throw new AppError('Enquiry not found', 404);
     }
     return await enquiryRepo.deleteById(id);
 };

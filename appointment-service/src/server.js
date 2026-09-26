@@ -10,18 +10,35 @@ import cors from 'cors';
 import { setupSwagger } from './config/swagger.js';
 import Connect from './config/mongodbconnection.js';
 import AppointmentRouter from './routes/index.js';
+import AppError from './utils/AppError.js';
+import globalErrorHandler from './middleware/error.middleware.js';
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
 setupSwagger(app);
-
 app.use('/api/appointments', AppointmentRouter);
+
+// 1. Catch 404 for unhandled routes
+app.all('*', (req, res, next) => {
+    next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+});
+
+// 2. Global Error Handling Middleware
+app.use(globalErrorHandler);
 
 const PORT = process.env.PORT || 5003;
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
-    Connect()
+    Connect();
+});
+
+// 3. Graceful shutdown on unhandled rejections
+process.on('unhandledRejection', (err) => {
+    console.error('UNHANDLED REJECTION! 💥', err.name, err.message);
+    server.close(() => {
+        process.exit(1);
+    });
 });

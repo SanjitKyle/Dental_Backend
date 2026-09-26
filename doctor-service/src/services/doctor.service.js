@@ -1,33 +1,30 @@
 import axios from 'axios';
 import * as DoctorRepository from '../repository/doctor.repository.js';
+import AppError from '../utils/AppError.js';
 
 export const createDoctor = async (doctorData) => {
     // 1. Create Auth Account first
     try {
         const authUrl = process.env.AUTH_SERVICE_URL || 'http://127.0.0.1:5001/api/auth';
 
-        // We assume doctorData contains a 'password' field that the frontend sends
         const authPayload = {
             name: doctorData.full_name,
             email: doctorData.email,
             password: doctorData.password || "doctor123",
-            role: 'doctor' // Assuming your auth service accepts a role
+            role: 'doctor'
         };
 
         const authResponse = await axios.post(`${authUrl}/register`, authPayload);
-
-        // Extract the generated userId from the auth response
         const newUserId = authResponse.data?.data?._id || authResponse.data?.user?._id || authResponse.data?._id;
 
         if (!newUserId) {
-            throw new Error("Auth service did not return a valid userId");
+            throw new AppError("Auth service did not return a valid userId", 502);
         }
 
         // 2. Attach the new userId to the doctor profile data and remove the password
         doctorData.userId = newUserId;
         delete doctorData.password;
 
-        // Ensure defaults for schema requirements
         if (!doctorData.qualifications || !doctorData.qualifications.length) {
             doctorData.qualifications = ["BDS"];
         }
@@ -40,47 +37,63 @@ export const createDoctor = async (doctorData) => {
             doctorData.consultation_fee = Number(doctorData.consultation_fee) || 0;
         }
 
-        // 3. Save the Doctor Profile in our database
+        // 3. Save the Doctor Profile
         return await DoctorRepository.createDoctor(doctorData);
 
     } catch (error) {
+        if (error instanceof AppError) throw error;
         console.error("Error communicating with Auth Service:", error.message);
-        throw new Error("Failed to create Auth account for Doctor: " + (error.response?.data?.message || error.message));
+        const msg = error.response?.data?.message || error.message || "Failed to create Auth account";
+        throw new AppError("Failed to create Auth account for Doctor: " + msg, error.response?.status || 400);
     }
 };
-export const getAllDoctors = async ({query,limit=0,skip=0}) => {
-    const {doctors, total}= await DoctorRepository.getAllDoctors({query,limit,skip});
-    return {doctors, total}
+
+export const getAllDoctors = async ({ query, limit = 10, skip = 0 }) => {
+    const { doctors, total } = await DoctorRepository.getAllDoctors({ query, limit, skip });
+    return { doctors, total };
 };
+
 export const getDoctorById = async (id) => {
-    return await DoctorRepository.getDoctorById(id);
+    const doctor = await DoctorRepository.getDoctorById(id);
+    if (!doctor) {
+        throw new AppError("Doctor not found", 404);
+    }
+    return doctor;
 };
+
 export const getDoctorFullProfile = async (userId) => {
-    // 1. Fetch from Doctor Database
     const doctorInfo = await DoctorRepository.getDoctorByUserId(userId);
     if (!doctorInfo) {
-        throw new Error("Doctor professional profile not found");
+        throw new AppError("Doctor professional profile not found", 404);
     }
 
-    // 2. Fetch from Auth Service using internal API call
     let authInfo = null;
     try {
-        const authUrl = process.env.AUTH_SERVICE_URL || 'https://dental-backend-jekw.onrender.com/api/auth';
+        const authUrl = process.env.AUTH_SERVICE_URL || 'http://127.0.0.1:5001/api/auth';
         const authResponse = await axios.get(`${authUrl}/users/${userId}`);
         authInfo = authResponse.data;
     } catch (authError) {
         console.error("Warning: Could not fetch from auth-service", authError.message);
     }
 
-    // 3. Combine them
     return {
         ...doctorInfo._doc,
         auth_details: authInfo ? authInfo : "Auth details unavailable"
     };
 };
+
 export const updateDoctor = async (id, updateData) => {
-    return await DoctorRepository.updateDoctor(id, updateData);
+    const updated = await DoctorRepository.updateDoctor(id, updateData);
+    if (!updated) {
+        throw new AppError("Doctor not found", 404);
+    }
+    return updated;
 };
+
 export const deleteDoctor = async (id) => {
-    return await DoctorRepository.deleteDoctor(id);
+    const deleted = await DoctorRepository.deleteDoctor(id);
+    if (!deleted) {
+        throw new AppError("Doctor not found", 404);
+    }
+    return deleted;
 };

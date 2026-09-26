@@ -1,48 +1,34 @@
-// services entry point for appointment-service
-import * as repository from "../repository/index.js"
-export const createAppointment=async(data)=>{
-    try{
-        const response=await repository.createAppointment(data);
-        return response;
+import * as repository from "../repository/index.js";
+import AppError from "../utils/AppError.js";
 
-    }catch(error)
-    {
-        throw error;
-    }
-}
+export const createAppointment = async (data) => {
+    return await repository.createAppointment(data);
+};
 
-export const getAppointments = async ({ query = {}, skip = 0, limit = 10} ) => {
-    try {
-        const {appointments, total} = await repository.getAppointments({ query , skip , limit });
-        return {appointments, total}
-    } catch (error) {
-        throw error;
-    }
-}
+export const getAppointments = async ({ query = {}, skip = 0, limit = 10 }) => {
+    return await repository.getAppointments({ query, skip, limit });
+};
 
 export const getAppointmentById = async (id) => {
-    try {
-        const response = await repository.getAppointmentById(id);
-        return response;
-    } catch (error) {
-        throw error;
+    const appointment = await repository.getAppointmentById(id);
+    if (!appointment) {
+        throw new AppError("Appointment not found", 404);
     }
-}
+    return appointment;
+};
 
 export const updateAppointment = async (id, data) => {
-    try {
-        const response = await repository.updateAppointment(id, data);
-        return response;
-    } catch (error) {
-        throw error;
+    const updated = await repository.updateAppointment(id, data);
+    if (!updated) {
+        throw new AppError("Appointment not found", 404);
     }
-}
+    return updated;
+};
 
 export const deleteAppointment = async (id) => {
-    try {
-        const response = await repository.deleteAppointment(id);
-        return response;
-    } catch (error) {
-        throw error;
+    const deleted = await repository.deleteAppointment(id);
+    if (!deleted) {
+        throw new AppError("Appointment not found", 404);
     }
-}
+    return deleted;
+};

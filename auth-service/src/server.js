@@ -9,6 +9,8 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import AuthRouter from "./routes/auth.js";
 import { setupSwagger } from "./config/swagger.js";
+import AppError from "./utils/AppError.js";
+import globalErrorHandler from "./middleware/error.middleware.js";
 
 dotenv.config();
 
@@ -30,7 +32,23 @@ App.use((err, req, res, next) => {
 App.use('/api/auth', AuthRouter);
 setupSwagger(App);
 
+// 1. Catch 404 for unhandled routes
+App.all('*', (req, res, next) => {
+    next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+});
+
+// 2. Global Error Handling Middleware
+App.use(globalErrorHandler);
+
 const PORT = process.env.PORT || 5000;
-App.listen(PORT, () => {
+const server = App.listen(PORT, () => {
     console.log('auth server is running on port ' + PORT);
+});
+
+// 3. Graceful shutdown on unhandled rejections
+process.on('unhandledRejection', (err) => {
+    console.error('UNHANDLED REJECTION! 💥', err.name, err.message);
+    server.close(() => {
+        process.exit(1);
+    });
 });

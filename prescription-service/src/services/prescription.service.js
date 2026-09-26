@@ -1,4 +1,5 @@
 import * as prescriptionRepo from '../repository/prescription.repository.js';
+import AppError from '../utils/AppError.js';
 
 /**
  * Generate a unique sequential prescription number: RX-YYYYMMDD-XXXX
@@ -18,7 +19,7 @@ const generatePrescriptionNumber = async () => {
 
 export const createPrescription = async (data, userId) => {
     if (!data.medications || data.medications.length === 0) {
-        throw new Error('Prescription must contain at least one medication');
+        throw new AppError('Prescription must contain at least one medication', 400);
     }
 
     const prescriptionNumber = await generatePrescriptionNumber();
@@ -86,7 +87,7 @@ export const getAllPrescriptions = async (query = {}) => {
 export const getPrescriptionById = async (id) => {
     const prescription = await prescriptionRepo.findById(id);
     if (!prescription) {
-        throw new Error('Prescription not found');
+        throw new AppError('Prescription not found', 404);
     }
     return prescription;
 };
@@ -94,7 +95,7 @@ export const getPrescriptionById = async (id) => {
 export const getPrescriptionByNumber = async (prescriptionNumber) => {
     const prescription = await prescriptionRepo.findByPrescriptionNumber(prescriptionNumber);
     if (!prescription) {
-        throw new Error('Prescription not found');
+        throw new AppError('Prescription not found', 404);
     }
     return prescription;
 };
@@ -114,11 +115,11 @@ export const getPrescriptionsByAppointment = async (appointmentId) => {
 export const updatePrescription = async (id, updateData, userId) => {
     const existing = await prescriptionRepo.findById(id);
     if (!existing) {
-        throw new Error('Prescription not found');
+        throw new AppError('Prescription not found', 404);
     }
 
     if (existing.status === 'cancelled' || existing.status === 'dispensed') {
-        throw new Error(`Cannot modify a prescription that is already ${existing.status}`);
+        throw new AppError(`Cannot modify a prescription that is already ${existing.status}`, 400);
     }
 
     const payload = {
@@ -132,12 +133,12 @@ export const updatePrescription = async (id, updateData, userId) => {
 export const updatePrescriptionStatus = async (id, status, userId) => {
     const validStatuses = ['draft', 'active', 'dispensed', 'cancelled', 'expired'];
     if (!validStatuses.includes(status)) {
-        throw new Error(`Invalid status. Must be one of: ${validStatuses.join(', ')}`);
+        throw new AppError(`Invalid status. Must be one of: ${validStatuses.join(', ')}`, 400);
     }
 
     const existing = await prescriptionRepo.findById(id);
     if (!existing) {
-        throw new Error('Prescription not found');
+        throw new AppError('Prescription not found', 404);
     }
 
     return await prescriptionRepo.updateStatus(id, status, userId);
@@ -146,7 +147,7 @@ export const updatePrescriptionStatus = async (id, status, userId) => {
 export const deletePrescription = async (id) => {
     const existing = await prescriptionRepo.findById(id);
     if (!existing) {
-        throw new Error('Prescription not found');
+        throw new AppError('Prescription not found', 404);
     }
     return await prescriptionRepo.deleteById(id);
 };
