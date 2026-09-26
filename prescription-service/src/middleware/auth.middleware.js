@@ -13,7 +13,7 @@ const authMiddleware = async (req, res, next) => {
         }
 
         const token = authHeader.split(' ')[1];
-        const secret = process.env.SECRET_KEY
+        const secret = process.env.SECRET_KEY || process.env.JWT_SECRET || 'HOSPITAL_MAN';
         const decoded = jwt.verify(token, secret);
 
         req.userId = decoded?._id || decoded?.id || decoded?.userId;
