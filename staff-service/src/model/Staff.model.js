@@ -56,14 +56,17 @@ const staffSchema = new mongoose.Schema({
     status: { 
         type: String, 
         enum: ['ACTIVE', 'ON_LEAVE', 'SUSPENDED', 'TERMINATED'], 
-        default: 'ACTIVE' 
+        default: 'ACTIVE',
+        index:true
     },
     
     // 6. Audit
-    createdBy: { type:String}
+    createdBy: { type:String, index:true}
     
 }, { timestamps: true });
 
+staffSchema.index({ createdAt: -1 });
+staffSchema.index({ department: 1, status: 1 });
 const Staff = mongoose.model('Staff', staffSchema);
 
 export default Staff;

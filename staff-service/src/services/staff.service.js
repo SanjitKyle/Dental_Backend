@@ -5,8 +5,8 @@ export const createStaff = async (data,token) => {
     return await staffRepository.create(data,token);
 };
 
-export const getAllStaff = async () => {
-    return await staffRepository.findAll();
+export const getAllStaff = async ({limit, skip}) => {
+    return await staffRepository.findAll({limit,skip});
 };
 
 export const getStaffById = async (id) => {

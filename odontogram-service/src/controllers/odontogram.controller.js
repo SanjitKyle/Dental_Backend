@@ -1,5 +1,29 @@
 import * as odontogramService from '../services/odontogram.service.js';
 
+export const getAllOdontograms = async (req, res) => {
+    try {
+        const result = await odontogramService.getAllOdontograms(req.query);
+        res.status(200).json({
+            success: true,
+            data: result.odontograms,
+            pagination: {
+                total: result.total,
+                page: result.page,
+                limit: result.limit,
+                offset: result.offset,
+                totalPages: result.totalPages,
+                hasNextPage: result.hasNextPage,
+                hasPrevPage: result.hasPrevPage
+            }
+        });
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            message: error.message || 'Failed to fetch odontograms'
+        });
+    }
+};
+
 export const getPatientOdontogram = async (req, res) => {
     try {
         const { patientId } = req.params;

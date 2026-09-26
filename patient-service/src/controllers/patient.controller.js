@@ -37,8 +37,25 @@ export const updatePatientProfile = async (req, res) => {
 export const getAllPatients = async (req, res) => {
     try {
         const userId = req.userId;
-        const patients = await patientService.getAllProfiles(userId);
-        res.status(200).json({ data: patients });
+        const page = Math.max(1, parseInt(req.query.page, 10) || 1);
+        const limit = Math.max(1, parseInt(req.query.limit, 10) || 10);
+        const offset = req.query.offset !== undefined ? parseInt(req.query.offset, 10) : (page - 1) * limit
+        const { patients, total } = await patientService.getAllProfiles({ userId, limit, skip: offset });
+        res.status(200).json({
+            success: true,
+            data: patients,
+            paginations: {
+                total,
+                page,
+                limit,
+                offset,
+                totalPages: Math.ceil(total / limit),
+                hasNextpage: offset + limit < total,
+                hasPrevPage: page > 1
+
+            }
+
+        });
     } catch (error) {
         res.status(500).json({ message: error.message || 'Internal server error' });
     }

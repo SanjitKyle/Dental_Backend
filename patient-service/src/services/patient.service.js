@@ -22,8 +22,9 @@ export const updateProfile = async (id, data) => {
     return patient;
 };
 
-export const getAllProfiles = async (userId) => {
-    return await patientRepository.getAllPatients(userId);
+
+export const getAllProfiles = async ({ userId, limit = 10, skip = 0 }) => {
+    return await patientRepository.getAllPatients({ userId, limit, skip });
 };
 export const deletePatientById=async(id)=>{
     try{

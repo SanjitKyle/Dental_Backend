@@ -39,8 +39,12 @@ export const create = async (data, token) => {
 
     return await Staff.create(finalRes);
 };
-export const findAll = async () => {
-    return await Staff.find();
+export const findAll = async ({limit,skip}) => {
+    const[staffMembers,total]=await Promise.all([
+        Staff.find().sort({createdAt:-1}).skip(skip).limit(limit),
+        Staff.countDocuments({})
+    ]);
+    return {staffMembers,total}
 };
 export const findById = async (id) => {
     return await Staff.findById(id);

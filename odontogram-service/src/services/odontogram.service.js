@@ -36,6 +36,56 @@ const buildDefaultTeeth = (dentitionType = 'permanent') => {
 };
 
 /**
+ * Get all odontograms with pagination, filtering, and projection (for Admin Dashboard)
+ */
+export const getAllOdontograms = async (query = {}) => {
+    const {
+        page = 1,
+        limit = 10,
+        offset,
+        status,
+        doctorId,
+        dentitionType,
+        patientId,
+        includeTeeth = 'false'
+    } = query;
+
+    const filter = {};
+    if (status) filter.status = status;
+    if (doctorId) filter.doctorId = doctorId;
+    if (dentitionType) filter.dentitionType = dentitionType;
+    if (patientId) filter.patientId = patientId;
+
+    const parsedPage = Math.max(1, parseInt(page, 10) || 1);
+    const parsedLimit = Math.max(1, parseInt(limit, 10) || 10);
+    const skip = offset !== undefined
+        ? Math.max(0, parseInt(offset, 10) || 0)
+        : (parsedPage - 1) * parsedLimit;
+
+    // Exclude heavy 32-tooth array & audit history by default for dashboard overview
+    const select = includeTeeth === 'true' ? null : '-teeth -history';
+
+    const { odontograms, total } = await odontogramRepo.findAll({
+        filter,
+        skip,
+        limit: parsedLimit,
+        sort: { createdAt: -1 },
+        select
+    });
+
+    return {
+        odontograms,
+        total,
+        page: parsedPage,
+        limit: parsedLimit,
+        offset: skip,
+        totalPages: Math.ceil(total / parsedLimit),
+        hasNextPage: skip + parsedLimit < total,
+        hasPrevPage: skip > 0 || parsedPage > 1
+    };
+};
+
+/**
  * Get existing odontogram or initialize a default healthy chart for patient
  */
 export const getOrCreatePatientOdontogram = async (patientId, options = {}) => {

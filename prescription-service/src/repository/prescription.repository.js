@@ -5,8 +5,12 @@ export const create = async (prescriptionData) => {
     return await prescription.save();
 };
 
-export const findAll = async (filters = {}) => {
-    return await Prescription.find(filters).sort({ createdAt: -1 });
+export const findAll = async ({ filter = {}, skip = 0, limit = 10, sort = { createdAt: -1 } }) => {
+    const [prescriptions, total] = await Promise.all([
+        Prescription.find(filter).sort(sort).skip(skip).limit(limit),
+        Prescription.countDocuments(filter)
+    ]);
+    return { prescriptions, total };
 };
 
 export const findById = async (id) => {

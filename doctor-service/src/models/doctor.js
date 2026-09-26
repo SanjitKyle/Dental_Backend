@@ -35,7 +35,8 @@ const doctorSchema = new mongoose.Schema({
     },
     qualifications: {
         type: [String], // Array of degrees e.g., ["BDS", "MDS"]
-        default: ['BDS']
+        default: ['BDS'],
+        index:true
     },
     experience_years: {
         type: Number,

@@ -140,4 +140,9 @@ const PrescriptionSchema = new mongoose.Schema({
     timestamps: true
 });
 
+PrescriptionSchema.index({ createdAt: -1 });
+PrescriptionSchema.index({ patientId: 1, createdAt: -1 });
+PrescriptionSchema.index({ doctorId: 1, createdAt: -1 });
+PrescriptionSchema.index({ status: 1, createdAt: -1 });
+
 export default mongoose.model('Prescription', PrescriptionSchema);

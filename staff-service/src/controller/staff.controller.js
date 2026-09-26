@@ -19,8 +19,22 @@ export const createStaff = async (req, res) => {
 
 export const getStaff = async (req, res) => {
     try {
-        const staffMembers = await staffService.getAllStaff();
-        res.status(200).json({ success: true, data: staffMembers });
+        const page=Math.max(1,parseInt(req.query.page,10)||1);
+        const limit=Math.max(1, parseInt(req.query.limit,10)||10);
+const offset = req.query.offset !== undefined 
+    ? Math.max(0, parseInt(req.query.offset, 10) || 0) 
+    : (page - 1) * limit;
+
+        const {staffMembers,total} = await staffService.getAllStaff({limit,skip:offset});
+        res.status(200).json({ 
+            success:true,
+            data:staffMembers,
+            total,
+            page,
+            offset,
+            hasNextPage:offset+limit<total,
+            hasPrevPage: page>1
+         });
     } catch (error) {
         const statusCode = error.statusCode || 500;
         res.status(statusCode).json({ success: false, message: error.message });

@@ -49,10 +49,19 @@ export const createPrescription = async (req, res) => {
 
 export const getAllPrescriptions = async (req, res) => {
     try {
-        const prescriptions = await prescriptionService.getAllPrescriptions(req.query);
+        const result = await prescriptionService.getAllPrescriptions(req.query);
         res.status(200).json({
             success: true,
-            data: prescriptions
+            data: result.prescriptions,
+            pagination: {
+                total: result.total,
+                page: result.page,
+                limit: result.limit,
+                offset: result.offset,
+                totalPages: result.totalPages,
+                hasNextPage: result.hasNextPage,
+                hasPrevPage: result.hasPrevPage
+            }
         });
     } catch (error) {
         res.status(400).json({

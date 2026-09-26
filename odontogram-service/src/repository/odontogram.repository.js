@@ -1,5 +1,17 @@
 import Odontogram from '../models/odontogram.model.js';
 
+export const findAll = async ({ filter = {}, skip = 0, limit = 10, sort = { createdAt: -1 }, select = null }) => {
+    const query = Odontogram.find(filter).sort(sort).skip(skip).limit(limit);
+    if (select) {
+        query.select(select);
+    }
+    const [odontograms, total] = await Promise.all([
+        query,
+        Odontogram.countDocuments(filter)
+    ]);
+    return { odontograms, total };
+};
+
 export const findByPatientId = async (patientId, status = 'active') => {
     return await Odontogram.findOne({ patientId, status });
 };

@@ -1,5 +1,6 @@
 import express from 'express';
 import {
+    getAllOdontograms,
     getPatientOdontogram,
     createOdontogram,
     updatePatientOdontogram,
@@ -137,6 +138,61 @@ const router = express.Router();
  *   name: Odontograms
  *   description: Dental charting and odontogram management API
  */
+
+/**
+ * @swagger
+ * /api/odontograms:
+ *   get:
+ *     summary: Get all patient odontograms with pagination (Admin Dashboard)
+ *     tags: [Odontograms]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Page number (1-indexed)
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: Number of records per page
+ *       - in: query
+ *         name: offset
+ *         schema:
+ *           type: integer
+ *         description: Explicit skip offset
+ *       - in: query
+ *         name: status
+ *         schema:
+ *           type: string
+ *           enum: [active, archived]
+ *       - in: query
+ *         name: dentitionType
+ *         schema:
+ *           type: string
+ *           enum: [permanent, deciduous, mixed]
+ *       - in: query
+ *         name: doctorId
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: includeTeeth
+ *         schema:
+ *           type: string
+ *           enum: ['true', 'false']
+ *           default: 'false'
+ *         description: Set to 'true' to include the full 32-teeth array
+ *     responses:
+ *       200:
+ *         description: Odontograms retrieved successfully
+ *       400:
+ *         description: Bad request
+ */
+router.get('/', authMiddleware, getAllOdontograms);
 
 /**
  * @swagger

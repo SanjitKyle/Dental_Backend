@@ -156,7 +156,8 @@ const OdontogramSchema = new mongoose.Schema({
     status: {
         type: String,
         enum: ['active', 'archived'],
-        default: 'active'
+        default: 'active',
+        index:true 
     },
     history: [HistoryEntrySchema],
     createdBy: {
@@ -166,5 +167,9 @@ const OdontogramSchema = new mongoose.Schema({
         type: String
     }
 }, { timestamps: true });
+
+OdontogramSchema.index({ createdAt: -1 });
+OdontogramSchema.index({ status: 1, createdAt: -1 });
+OdontogramSchema.index({ doctorId: 1, createdAt: -1 });
 
 export default mongoose.model('Odontogram', OdontogramSchema);

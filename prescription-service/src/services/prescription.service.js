@@ -34,8 +34,53 @@ export const createPrescription = async (data, userId) => {
     return await prescriptionRepo.create(payload);
 };
 
-export const getAllPrescriptions = async (filters = {}) => {
-    return await prescriptionRepo.findAll(filters);
+export const getAllPrescriptions = async (query = {}) => {
+    const {
+        page = 1,
+        limit = 10,
+        offset,
+        status,
+        patientId,
+        doctorId,
+        appointmentId,
+        search
+    } = query;
+
+    const filter = {};
+    if (status) filter.status = status;
+    if (patientId) filter.patientId = patientId;
+    if (doctorId) filter.doctorId = doctorId;
+    if (appointmentId) filter.appointmentId = appointmentId;
+    if (search) {
+        filter.$or = [
+            { prescriptionNumber: { $regex: search, $options: 'i' } },
+            { chiefComplaint: { $regex: search, $options: 'i' } }
+        ];
+    }
+
+    const parsedPage = Math.max(1, parseInt(page, 10) || 1);
+    const parsedLimit = Math.max(1, parseInt(limit, 10) || 10);
+    const skip = offset !== undefined
+        ? Math.max(0, parseInt(offset, 10) || 0)
+        : (parsedPage - 1) * parsedLimit;
+
+    const { prescriptions, total } = await prescriptionRepo.findAll({
+        filter,
+        skip,
+        limit: parsedLimit,
+        sort: { createdAt: -1 }
+    });
+
+    return {
+        prescriptions,
+        total,
+        page: parsedPage,
+        limit: parsedLimit,
+        offset: skip,
+        totalPages: Math.ceil(total / parsedLimit),
+        hasNextPage: skip + parsedLimit < total,
+        hasPrevPage: skip > 0 || parsedPage > 1
+    };
 };
 
 export const getPrescriptionById = async (id) => {
