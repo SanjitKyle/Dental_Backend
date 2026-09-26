@@ -24,8 +24,8 @@ const PORT = process.env.PORT || 5008;
 App.use('/api/staff', staffRoutes);
 setupSwagger(App);
 
-// 1. Catch unhandled routes (404)
-App.all('*', (req, res, next) => {
+// 1. Catch unhandled routes (404, Express 5 compatible)
+App.use((req, res, next) => {
     next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 

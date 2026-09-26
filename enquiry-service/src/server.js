@@ -32,8 +32,8 @@ app.get('/health', (req, res) => {
     res.status(200).json({ status: 'UP', service: 'enquiry-service' });
 });
 
-// 1. Catch 404 for unhandled routes
-app.all('*', (req, res, next) => {
+// 1. Catch 404 for unhandled routes (Express 5 compatible)
+app.use((req, res, next) => {
     next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 

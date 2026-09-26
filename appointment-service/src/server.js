@@ -20,15 +20,15 @@ app.use(express.json());
 setupSwagger(app);
 app.use('/api/appointments', AppointmentRouter);
 
-// 1. Catch 404 for unhandled routes
-app.all('*', (req, res, next) => {
+// 1. Catch 404 for unhandled routes (Express 5 compatible)
+app.use((req, res, next) => {
     next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 
 // 2. Global Error Handling Middleware
 app.use(globalErrorHandler);
 
-const PORT = process.env.PORT || 5003;
+const PORT = process.env.PORT || 5004;
 
 const server = app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

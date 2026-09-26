@@ -17,13 +17,13 @@ const App = express();
 App.use(cors());
 App.use(express.json());
 App.use(express.urlencoded({ extended: true }));
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 5002;
 
 App.use('/api/patients', PatientRouter);
 setupSwagger(App);
 
-// 1. Catch 404 for unhandled routes
-App.all('*', (req, res, next) => {
+// 1. Catch 404 for unhandled routes (Express 5 compatible)
+App.use((req, res, next) => {
     next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 
