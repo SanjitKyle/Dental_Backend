@@ -7,6 +7,12 @@ import {
     DeletePatients
 } from '../controllers/patient.controller.js';
 import authMiddleware from '../middleware/index.js'; // Assuming auth middleware exists
+import validate from '../middleware/validate.middleware.js';
+import { 
+    createPatientSchema, 
+    updatePatientSchema, 
+    patientIdParamSchema 
+} from '../validations/patient.validation.js';
 
 const router = express.Router();
 
@@ -82,7 +88,7 @@ const router = express.Router();
  *       401:
  *         description: Unauthorized
  */
-router.post('/', authMiddleware, createPatientProfile);
+router.post('/', authMiddleware, validate(createPatientSchema), createPatientProfile);
 
 /**
  * @swagger
@@ -117,7 +123,7 @@ router.get('/', authMiddleware, getAllPatients);
  *       404:
  *         description: Profile not found
  */
-router.get('/:id', getPatientProfile);
+router.get('/:id', validate(patientIdParamSchema), getPatientProfile);
 
 /**
  * @swagger
@@ -150,7 +156,7 @@ router.get('/:id', getPatientProfile);
  *       404:
  *         description: Profile not found
  */
-router.post('/:id', authMiddleware, updatePatientProfile);
-router.post("/delete/:id",authMiddleware,DeletePatients)
+router.post('/:id', authMiddleware, validate(updatePatientSchema), updatePatientProfile);
+router.post("/delete/:id", authMiddleware, validate(patientIdParamSchema), DeletePatients);
 
 export default router;

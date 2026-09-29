@@ -2,7 +2,9 @@ const express = require('express');
 const dotenv = require('dotenv');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const cors = require('cors');
-
+import {helmet} from 'helmet'
+import hpp from 'hpp';
+import rateLimit from 'express-rate-limit'
 dotenv.config();
 const app = express();
 
@@ -11,6 +13,8 @@ app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin']
 }));
+app.use(helmet())
+app.use(hpp())
 
 // Route to Auth Service
 app.use(createProxyMiddleware({
@@ -65,6 +69,13 @@ app.use(createProxyMiddleware({
 app.use(createProxyMiddleware({
     pathFilter: '/api/staff',
     target: 'http://127.0.0.1:5008',
+    changeOrigin: true
+}));
+
+// Route to Invoice Service
+app.use(createProxyMiddleware({
+    pathFilter: '/api/invoices',
+    target: process.env.INVOICE_SERVICE_URL || 'http://127.0.0.1:5010',
     changeOrigin: true
 }));
 
