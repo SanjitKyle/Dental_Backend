@@ -58,13 +58,12 @@ const invoiceSchema = new mongoose.Schema({
 }, { timestamps: true });   // adds createdAt, updatedAt automatically
 
 // Auto-generate invoice number before save
-invoiceSchema.pre('save', async function (next) {
+invoiceSchema.pre('save', async function () {
   if (!this.invoiceNumber) {
     const year = new Date().getFullYear();
     const count = await mongoose.model('Invoice').countDocuments();
     this.invoiceNumber = `INV-${year}-${String(count + 1).padStart(3, '0')}`;
   }
-  next();
 });
 
 export default mongoose.model('Invoice', invoiceSchema);
