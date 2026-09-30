@@ -46,7 +46,16 @@ const staffSchema = new mongoose.Schema({
             'MANAGE_FOLLOW_UP', 'EDIT_FOLLOW_UP', 'DELETE_FOLLOW_UP',
             
             // Odontogram (Dental Charting)
-            'VIEW_ODONTOGRAM', 'CREATE_ODONTOGRAM', 'EDIT_ODONTOGRAM', 'DELETE_ODONTOGRAM'
+            'VIEW_ODONTOGRAM', 'CREATE_ODONTOGRAM', 'EDIT_ODONTOGRAM', 'DELETE_ODONTOGRAM',
+
+            // OPD Queue & Tokens
+            'VIEW_QUEUE', 'MANAGE_QUEUE', 'ISSUE_TOKEN',
+
+            // Treatment Plans & Quotations
+            'VIEW_TREATMENT_PLAN', 'MANAGE_TREATMENT_PLAN',
+
+            // Dental Lab Tracker
+            'VIEW_LAB_TRACKER', 'MANAGE_LAB_TRACKER'
         ]
     }],
 
