@@ -12,9 +12,12 @@ module.exports = {
         ODONTOGRAM_SERVICE_URL: "http://127.0.0.1:5005",
         PRESCRIPTION_SERVICE_URL: "http://127.0.0.1:5006",
         ENQUIRY_SERVICE_URL: "http://127.0.0.1:5007",
-        STAFF_SERVICE_URL: "http://127.0.0.1:5008"
+        STAFF_SERVICE_URL: "http://127.0.0.1:5008",
+        INVOICE_SERVICE_URL: "http://127.0.0.1:5010",
+        QUEUE_SERVICE_URL: "http://127.0.0.1:5011"
       }
     },
+
     {
       name: "auth-service",
       script: "./auth-service/src/server.js",
@@ -109,6 +112,27 @@ module.exports = {
         MONGO_URL: "mongodb+srv://kylefront74_db_user:iw5HkUP9sQRZcyp9@cluster0.3pdjxc9.mongodb.net/?appName=Cluster0",
         JWT_SECRET: "HOSPITAL_MAN"
       }
+    },
+    {
+      name: "invoice-service",
+      script: "./invoice-service/src/server.js",
+      env: {
+        PORT: 5010,
+        MONGO_URI: "mongodb+srv://kylefront74_db_user:ZkVygiRH8VLigqmr@cluster0.o0leu0w.mongodb.net/dental_invoices?retryWrites=true&w=majority&appName=Cluster0",
+        JWT_SECRET: "HOSPITAL_MAN"
+      }
+    },
+    {
+      name: "token-queue",
+      script: "./token-queue/src/server.js",
+      env: {
+        PORT: 5011,
+        MONGO_URI: "mongodb+srv://kylefront74_db_user:ZkVygiRH8VLigqmr@cluster0.o0leu0w.mongodb.net/dental_token_queue?retryWrites=true&w=majority&appName=Cluster0",
+        JWT_SECRET: "HOSPITAL_MAN",
+        AUTH_SERVICE_URL: "http://127.0.0.1:5001/api/auth",
+        PATIENT_SERVICE_URL: "http://127.0.0.1:5002/api/patients"
+      }
     }
   ]
 };
+
