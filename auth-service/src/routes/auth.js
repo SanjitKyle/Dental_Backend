@@ -1,19 +1,20 @@
 import { Router } from "express";
-import { RegisterUser,LoginUser } from "../controllers/Auth.js";
+import { RegisterUser, LoginUser, RegisterClinic, CreateSuperAdmin } from "../controllers/Auth.js";
 const AuthRouter = Router();
+
 
 /**
  * @swagger
  * tags:
  *   name: Authentication
- *   description: User registration and login API
+ *   description: User registration, Clinic SaaS onboarding, and login APIs
  */
 
 /**
  * @swagger
- * /api/auth/register:
+ * /api/auth/register-clinic:
  *   post:
- *     summary: Register a new user
+ *     summary: Sign up as a new Clinic (Self-service SaaS Onboarding)
  *     tags: [Authentication]
  *     requestBody:
  *       required: true
@@ -21,29 +22,26 @@ const AuthRouter = Router();
  *         application/json:
  *           schema:
  *             type: object
- *             required:
- *               - email
- *               - password
+ *             required: [clinicName, ownerName, email, password, phone]
  *             properties:
- *               email:
- *                 type: string
- *                 format: email
- *               password:
- *                 type: string
- *                 format: password
+ *               clinicName: { type: string, example: "Smile Dental Hospital" }
+ *               ownerName: { type: string, example: "Dr. Ananya Sharma" }
+ *               email: { type: string, format: email, example: "dr.ananya@smiledental.com" }
+ *               password: { type: string, example: "Secret123" }
+ *               phone: { type: string, example: "+91 99887 66554" }
+ *               city: { type: string, example: "Pune" }
+ *               state: { type: string, example: "Maharashtra" }
  *     responses:
  *       201:
- *         description: User registered successfully
- *       400:
- *         description: Bad request (e.g., user already exists)
+ *         description: Clinic created with 14-day free trial and JWT token
  */
-AuthRouter.post('/register',RegisterUser);
+AuthRouter.post('/register-clinic', RegisterClinic);
 
 /**
  * @swagger
- * /api/auth/login:
+ * /api/auth/create-super-admin:
  *   post:
- *     summary: Login an existing user
+ *     summary: Create Platform Super Admin (Master SaaS Owner)
  *     tags: [Authentication]
  *     requestBody:
  *       required: true
@@ -51,24 +49,22 @@ AuthRouter.post('/register',RegisterUser);
  *         application/json:
  *           schema:
  *             type: object
- *             required:
- *               - email
- *               - password
+ *             required: [name, email, password, superAdminSecret]
  *             properties:
- *               email:
- *                 type: string
- *                 format: email
- *               password:
- *                 type: string
- *                 format: password
+ *               name: { type: string, example: "Sanjit (Platform Admin)" }
+ *               email: { type: string, format: email, example: "admin@kyleinfotech.co.in" }
+ *               password: { type: string, example: "AdminMaster2026!" }
+ *               superAdminSecret: { type: string, example: "SUPER_SECRET_PLATFORM_KEY_2026" }
  *     responses:
- *       200:
- *         description: User logged in successfully (returns JWT token)
- *       400:
- *         description: Invalid credentials
- *       404:
- *         description: User not found
+ *       201:
+ *         description: Super Admin account initialized
+ *       403:
+ *         description: Invalid master secret key
  */
-AuthRouter.post('/login',LoginUser);
+AuthRouter.post('/create-super-admin', CreateSuperAdmin);
+
+AuthRouter.post('/register', RegisterUser);
+AuthRouter.post('/login', LoginUser);
 
 export default AuthRouter;
+
