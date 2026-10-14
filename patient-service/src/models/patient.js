@@ -64,7 +64,18 @@ const Patient = mongoose.Schema({
     },
     created_by: {
         type: String
+    },
+    clinicId: {
+        type: String,
+        default: null,
+        index: true
+    },
+    clinicName: {
+        type: String,
+        default: null
     }
-}, { timestamps: true })
+}, { timestamps: true });
+
+Patient.index({ clinicId: 1, createdAt: -1 });
 
 export default mongoose.model('Patient', Patient);

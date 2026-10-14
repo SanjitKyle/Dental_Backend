@@ -16,10 +16,13 @@ export const Auth = async (req, res, next) => {
         const secret = process.env.SECRET_KEY || process.env.JWT_SECRET || 'HOSPITAL_MAN';
         const decode = jwt.verify(token, secret);
         req.userId = decode?._id || decode?.id || decode?.userId;
+        req.role = decode?.role || null;
+        req.clinicId = decode?.clinicId || null;
+        req.clinicName = decode?.clinicName || null;
         
         next();
     } catch (error) {
-        res.status(403).json({
+        res.status(401).json({
             message: "Invalid or expired token"
         });
     }

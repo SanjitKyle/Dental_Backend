@@ -8,7 +8,10 @@ export const create = async (data, token) => {
         name: fullName,
         email: email,
         role: "staff",
-        password: "default123"
+        password: "default123",
+        clinicId: data.clinicId || null,
+        clinicName: data.clinicName || null,
+        phone: data.phoneNumber || ''
     };
 
     const authurl = process.env.AUTH_SERVICE_URL || 'http://127.0.0.1:5001/api/auth';
@@ -34,17 +37,29 @@ export const create = async (data, token) => {
 
     const finalRes = {
         ...data,
-        employeeuserId: userId
+        employeeuserId: userId,
+        clinicId: data.clinicId || null,
+        clinicName: data.clinicName || null
     };
 
     return await Staff.create(finalRes);
 };
-export const findAll = async ({limit,skip}) => {
-    const[staffMembers,total]=await Promise.all([
-        Staff.find().sort({createdAt:-1}).skip(skip).limit(limit),
-        Staff.countDocuments({})
+
+export const findAll = async ({ clinicId, userId, role, limit, skip }) => {
+    let filter = {};
+    if (role === 'super_admin') {
+        if (clinicId) filter = { clinicId: String(clinicId) };
+    } else if (clinicId) {
+        filter = { $or: [{ clinicId: String(clinicId) }, { createdBy: String(userId) }, { clinicId: null }] };
+    } else if (userId) {
+        filter = { createdBy: String(userId) };
+    }
+
+    const [staffMembers, total] = await Promise.all([
+        Staff.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit),
+        Staff.countDocuments(filter)
     ]);
-    return {staffMembers,total}
+    return { staffMembers, total };
 };
 export const findById = async (id) => {
     return await Staff.findById(id);

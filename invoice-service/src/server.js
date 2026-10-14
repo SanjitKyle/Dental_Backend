@@ -12,6 +12,7 @@ import AppError from './utils/AppError.js';
 import globalErrorHandler from './middleware/error.middleware.js';
 
 import { setupSwagger } from './config/swagger.js';
+import { MiddleWear } from './middleware/auth.middleware.js';
 
 dotenv.config();
 dotenv.config({ path: new URL('../.env', import.meta.url) });
@@ -20,6 +21,7 @@ const App = express();
 App.use(cors());
 App.use(express.json());
 App.use(express.urlencoded({ extended: true }));
+App.use(MiddleWear);
 
 const PORT = process.env.PORT || 5010;
 

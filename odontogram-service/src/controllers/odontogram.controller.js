@@ -3,7 +3,12 @@ import AppError from '../utils/AppError.js';
 
 export const getAllOdontograms = async (req, res, next) => {
     try {
-        const result = await odontogramService.getAllOdontograms(req.query);
+        const tenantInfo = {
+            clinicId: req.clinicId || req.query.clinicId || null,
+            userId: req.userId,
+            role: req.role
+        };
+        const result = await odontogramService.getAllOdontograms(req.query, tenantInfo);
         res.status(200).json({
             success: true,
             data: result.odontograms,
@@ -27,11 +32,15 @@ export const getPatientOdontogram = async (req, res, next) => {
         const { patientId } = req.params;
         const { dentitionType, doctorId } = req.query;
         const userId = req.userId;
+        const clinicId = req.clinicId || req.query.clinicId || null;
+        const clinicName = req.clinicName || null;
 
         const odontogram = await odontogramService.getOrCreatePatientOdontogram(patientId, {
             dentitionType,
             doctorId,
-            userId
+            userId,
+            clinicId,
+            clinicName
         });
 
         res.status(200).json({
@@ -47,7 +56,14 @@ export const getPatientOdontogram = async (req, res, next) => {
 export const createOdontogram = async (req, res, next) => {
     try {
         const userId = req.userId;
-        const newOdontogram = await odontogramService.createOdontogram(req.body, userId);
+        const clinicId = req.clinicId || req.body.clinicId || null;
+        const clinicName = req.clinicName || req.body.clinicName || null;
+
+        const newOdontogram = await odontogramService.createOdontogram({
+            ...req.body,
+            clinicId,
+            clinicName
+        }, userId);
 
         res.status(201).json({
             success: true,

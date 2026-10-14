@@ -39,7 +39,7 @@ const buildDefaultTeeth = (dentitionType = 'permanent') => {
 /**
  * Get all odontograms with pagination, filtering, and projection (for Admin Dashboard)
  */
-export const getAllOdontograms = async (query = {}) => {
+export const getAllOdontograms = async (query = {}, tenantInfo = {}) => {
     const {
         page = 1,
         limit = 10,
@@ -51,11 +51,23 @@ export const getAllOdontograms = async (query = {}) => {
         includeTeeth = 'false'
     } = query;
 
+    const { clinicId, userId, role } = tenantInfo;
+
     const filter = {};
     if (status) filter.status = status;
     if (doctorId) filter.doctorId = doctorId;
     if (dentitionType) filter.dentitionType = dentitionType;
     if (patientId) filter.patientId = patientId;
+
+    if (role === 'super_admin') {
+        if (clinicId) filter.clinicId = clinicId;
+    } else if (clinicId) {
+        filter.$or = [
+            { clinicId: String(clinicId) },
+            { createdBy: String(userId) },
+            { clinicId: null }
+        ];
+    }
 
     const parsedPage = Math.max(1, parseInt(page, 10) || 1);
     const parsedLimit = Math.max(1, parseInt(limit, 10) || 10);
@@ -90,7 +102,7 @@ export const getAllOdontograms = async (query = {}) => {
  * Get existing odontogram or initialize a default healthy chart for patient
  */
 export const getOrCreatePatientOdontogram = async (patientId, options = {}) => {
-    const { dentitionType = 'permanent', doctorId, userId } = options;
+    const { dentitionType = 'permanent', doctorId, userId, clinicId, clinicName } = options;
 
     let odontogram = await odontogramRepo.findByPatientId(patientId);
     if (!odontogram) {
@@ -102,6 +114,8 @@ export const getOrCreatePatientOdontogram = async (patientId, options = {}) => {
             teeth: defaultTeeth,
             generalNotes: 'Initial dental chart created',
             status: 'active',
+            clinicId: clinicId || null,
+            clinicName: clinicName || null,
             history: [{
                 action: 'INITIAL_CREATION',
                 details: { dentitionType, toothCount: defaultTeeth.length },
@@ -131,6 +145,8 @@ export const createOdontogram = async (data, userId) => {
     const newRecord = {
         ...data,
         teeth,
+        clinicId: data.clinicId || null,
+        clinicName: data.clinicName || null,
         createdBy: userId,
         lastUpdatedBy: userId,
         history: [{

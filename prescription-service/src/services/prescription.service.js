@@ -28,6 +28,8 @@ export const createPrescription = async (data, userId) => {
     const payload = {
         ...data,
         prescriptionNumber,
+        clinicId: data.clinicId || null,
+        clinicName: data.clinicName || null,
         createdBy: effectiveUserId,
         lastUpdatedBy: effectiveUserId
     };
@@ -35,7 +37,7 @@ export const createPrescription = async (data, userId) => {
     return await prescriptionRepo.create(payload);
 };
 
-export const getAllPrescriptions = async (query = {}) => {
+export const getAllPrescriptions = async (query = {}, tenantInfo = {}) => {
     const {
         page = 1,
         limit = 10,
@@ -47,16 +49,35 @@ export const getAllPrescriptions = async (query = {}) => {
         search
     } = query;
 
+    const { clinicId, userId, role } = tenantInfo;
+
     const filter = {};
     if (status) filter.status = status;
     if (patientId) filter.patientId = patientId;
     if (doctorId) filter.doctorId = doctorId;
     if (appointmentId) filter.appointmentId = appointmentId;
-    if (search) {
+
+    if (role === 'super_admin') {
+        if (clinicId) filter.clinicId = clinicId;
+    } else if (clinicId) {
         filter.$or = [
+            { clinicId: String(clinicId) },
+            { createdBy: String(userId) },
+            { clinicId: null }
+        ];
+    }
+
+    if (search) {
+        const searchCondition = [
             { prescriptionNumber: { $regex: search, $options: 'i' } },
             { chiefComplaint: { $regex: search, $options: 'i' } }
         ];
+        if (filter.$or) {
+            filter.$and = [{ $or: filter.$or }, { $or: searchCondition }];
+            delete filter.$or;
+        } else {
+            filter.$or = searchCondition;
+        }
     }
 
     const parsedPage = Math.max(1, parseInt(page, 10) || 1);

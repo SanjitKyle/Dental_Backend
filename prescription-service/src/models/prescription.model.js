@@ -135,11 +135,21 @@ const PrescriptionSchema = new mongoose.Schema({
     },
     lastUpdatedBy: {
         type: String
+    },
+    clinicId: {
+        type: String,
+        default: null,
+        index: true
+    },
+    clinicName: {
+        type: String,
+        default: null
     }
 }, {
     timestamps: true
 });
 
+PrescriptionSchema.index({ clinicId: 1, createdAt: -1 });
 PrescriptionSchema.index({ createdAt: -1 });
 PrescriptionSchema.index({ patientId: 1, createdAt: -1 });
 PrescriptionSchema.index({ doctorId: 1, createdAt: -1 });

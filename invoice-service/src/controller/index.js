@@ -4,8 +4,12 @@ import { enrichInvoicesWithProfiles } from '../utils/enrichProfiles.js';
 // 1. CREATE INVOICE
 export const createInvoice = async (req, res, next) => {
     try {
+        const clinicId = req.clinicId || req.body.clinicId || null;
+        const clinicName = req.clinicName || req.body.clinicName || null;
         const invoiceData = {
             ...req.body,
+            clinicId,
+            clinicName,
             createdBy: req.userId || req.body.createdBy
         };
 
@@ -45,6 +49,18 @@ export const getAllInvoices = async (req, res, next) => {
         if (status) query.status = status;
         if (patientId) query.patientId = patientId;
         if (doctorId) query.doctorId = doctorId;
+
+        // Multi-tenant SaaS isolation
+        const clinicId = req.clinicId || req.query.clinicId || null;
+        if (req.role === 'super_admin') {
+            if (clinicId) query.clinicId = clinicId;
+        } else if (clinicId) {
+            query.$or = [
+                { clinicId: String(clinicId) },
+                { createdBy: String(req.userId) },
+                { clinicId: null }
+            ];
+        }
 
         // Date range query
         if (startDate || endDate) {

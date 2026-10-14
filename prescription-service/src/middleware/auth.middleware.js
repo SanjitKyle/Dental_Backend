@@ -18,9 +18,12 @@ const authMiddleware = async (req, res, next) => {
 
         req.userId = decoded?._id || decoded?.id || decoded?.userId;
         req.userRole = decoded?.role;
+        req.role = decoded?.role;
+        req.clinicId = decoded?.clinicId || null;
+        req.clinicName = decoded?.clinicName || null;
         next();
     } catch (error) {
-        return res.status(403).json({
+        return res.status(401).json({
             success: false,
             message: 'Invalid or expired token'
         });

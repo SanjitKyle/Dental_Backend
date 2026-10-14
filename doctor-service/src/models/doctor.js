@@ -69,7 +69,20 @@ const doctorSchema = new mongoose.Schema({
         type: String,
         enum: ['Active', 'On Leave', 'Inactive'],
         default: 'Active'
+    },
+
+    // Multi-tenant SaaS isolation
+    clinicId: {
+        type: String,
+        default: null,
+        index: true
+    },
+    clinicName: {
+        type: String,
+        default: null
     }
 }, { timestamps: true });
+
+doctorSchema.index({ clinicId: 1, createdAt: -1 });
 
 export default mongoose.model('Doctor', doctorSchema);

@@ -3,7 +3,9 @@ import * as DoctorService from '../services/doctor.service.js';
 // Create a new Doctor Profile
 export const createDoctor = async (req, res, next) => {
     try {
-        const doctorData = req.body;
+        const clinicId = req.clinicId || req.body.clinicId || null;
+        const clinicName = req.clinicName || req.body.clinicName || null;
+        const doctorData = { ...req.body, clinicId, clinicName };
         const newDoctor = await DoctorService.createDoctor(doctorData);
         res.status(201).json({
             success: true,
@@ -18,12 +20,25 @@ export const createDoctor = async (req, res, next) => {
 // Get all Doctors (with pagination and filters)
 export const getAllDoctors = async (req, res, next) => {
     try {
-        const { page: rawPage, limit: rawLimit, offset: rawOffset, ...filterQuery } = req.query;
+        const { page: rawPage, limit: rawLimit, offset: rawOffset, all, ...filterQuery } = req.query;
         const page = Math.max(1, parseInt(rawPage, 10) || 1);
-        const limit = Math.max(1, parseInt(rawLimit, 10) || 10);
+        const limit = Math.max(1, parseInt(rawLimit, 10) || 500);
         const offset = rawOffset !== undefined ? Math.max(0, parseInt(rawOffset, 10) || 0) : (page - 1) * limit;
 
-        const { doctors, total } = await DoctorService.getAllDoctors({ query: filterQuery, limit, skip: offset });
+        const clinicId = req.clinicId || req.query.clinicId || null;
+        let query = { ...filterQuery };
+        if (req.role === 'super_admin') {
+            if (clinicId) query.clinicId = clinicId;
+        } else if (clinicId) {
+            query = {
+                $and: [
+                    { $or: [{ clinicId: String(clinicId) }, { clinicId: null }, { clinicId: { $exists: false } }] },
+                    filterQuery
+                ]
+            };
+        }
+
+        const { doctors, total } = await DoctorService.getAllDoctors({ query, limit, skip: offset });
         res.status(200).json({
             success: true,
             data: doctors,

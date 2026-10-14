@@ -37,11 +37,20 @@ const appointment = mongoose.Schema({
     reasonForVisit: {
         type: String
     },
-
-  
+    clinicId: {
+        type: String,
+        default: null,
+        index: true
+    },
+    clinicName: {
+        type: String,
+        default: null
+    }
 }, { timestamps: true });
 
-// 1. Compound index for lightning-fast user paginated queries (sorted newest first)
+// 1. Compound index for multi-tenant and user paginated queries (sorted newest first)
+appointment.index({ clinicId: 1, createdAt: -1 });
+appointment.index({ clinicId: 1, date: 1 });
 appointment.index({ created_by: 1, createdAt: -1 });
 
 // 2. Index for doctor daily schedule lookups

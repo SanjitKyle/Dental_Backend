@@ -52,10 +52,14 @@ const invoiceSchema = new mongoose.Schema({
   // ── Notes ─────────────────────────────────────
   notes:        { type: String },
 
-  // ── Audit ─────────────────────────────────────
-  createdBy:    { type:String },
+  // ── Audit & SaaS Multi-tenancy ───────────────
+  createdBy:    { type: String },
+  clinicId:     { type: String, default: null, index: true },
+  clinicName:   { type: String, default: null },
 
 }, { timestamps: true });   // adds createdAt, updatedAt automatically
+
+invoiceSchema.index({ clinicId: 1, createdAt: -1 });
 
 // Auto-generate invoice number before save
 invoiceSchema.pre('save', async function () {

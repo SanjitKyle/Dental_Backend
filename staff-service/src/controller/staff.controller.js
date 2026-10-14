@@ -4,8 +4,12 @@ export const createStaff = async (req, res, next) => {
     try {
         const token = req.headers.authorization ? req.headers.authorization.split(" ")[1] : '';
         const userId = req.userId;
+        const clinicId = req.clinicId || req.body.clinicId || null;
+        const clinicName = req.clinicName || req.body.clinicName || null;
         const data = {
             ...req.body,
+            clinicId,
+            clinicName,
             createdBy: userId
         };
         const savedStaff = await staffService.createStaff(data, token);
@@ -18,12 +22,22 @@ export const createStaff = async (req, res, next) => {
 export const getStaff = async (req, res, next) => {
     try {
         const page = Math.max(1, parseInt(req.query.page, 10) || 1);
-        const limit = Math.max(1, parseInt(req.query.limit, 10) || 10);
+        const limit = Math.max(1, parseInt(req.query.limit, 10) || 500);
         const offset = req.query.offset !== undefined
             ? Math.max(0, parseInt(req.query.offset, 10) || 0)
             : (page - 1) * limit;
 
-        const { staffMembers, total } = await staffService.getAllStaff({ limit, skip: offset });
+        const clinicId = req.clinicId || req.query.clinicId || null;
+        const userId = req.userId;
+        const role = req.role;
+
+        const { staffMembers, total } = await staffService.getAllStaff({ 
+            clinicId, 
+            userId, 
+            role, 
+            limit, 
+            skip: offset 
+        });
         res.status(200).json({
             success: true,
             data: staffMembers,

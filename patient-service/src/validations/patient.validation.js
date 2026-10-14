@@ -2,14 +2,15 @@ import { z } from 'zod';
 
 const objectIdRegex = /^[0-9a-fA-F]{24}$/;
 
-// 1. Create Patient: requires full_name, allows ANY other dummy fields via .passthrough()
+// 1. Create Patient: requires full_name, allows other clinical & demographic fields via .passthrough()
 export const createPatientSchema = z.object({
     body: z.object({
         full_name: z.string().min(2, "Name must be at least 2 characters"),
-        phone: z.string().regex(/^[0-9]{10}$/, "Phone must be exactly 10 digits"),
-        email: z.string().email("Invalid email address"),
-        gender: z.enum(['Male', 'Female', 'Other'])
-    })
+        phone: z.union([z.string(), z.number()]).optional(),
+        email: z.string().email("Invalid email address").optional().or(z.literal('')),
+        gender: z.enum(['Male', 'Female', 'Other']).optional(),
+        clinicId: z.string().optional()
+    }).passthrough()
 });
 
 // 2. Update Patient: validates URL ID and allows any dummy update body

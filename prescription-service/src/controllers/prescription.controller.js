@@ -4,9 +4,17 @@ import * as prescriptionService from '../services/prescription.service.js';
 export const createPrescription = async (req, res, next) => {
     try {
         const userId = req.userId;
+        const clinicId = req.clinicId || req.body.clinicId || null;
+        const clinicName = req.clinicName || req.body.clinicName || null;
         const { patientId, doctorId, followUpDate, followUpInstructions } = req.body;
 
-        const prescription = await prescriptionService.createPrescription(req.body, userId);
+        const prescriptionData = {
+            ...req.body,
+            clinicId,
+            clinicName
+        };
+
+        const prescription = await prescriptionService.createPrescription(prescriptionData, userId);
 
         if (followUpDate) {
             try {
@@ -18,6 +26,8 @@ export const createPrescription = async (req, res, next) => {
                     status: 'Follow-up',
                     visit_type: 'Follow-up',
                     created_by: userId,
+                    clinicId,
+                    clinicName,
                     reasonForVisit: followUpInstructions || 'Follow-up visit',
                 };
 
@@ -42,7 +52,12 @@ export const createPrescription = async (req, res, next) => {
 
 export const getAllPrescriptions = async (req, res, next) => {
     try {
-        const result = await prescriptionService.getAllPrescriptions(req.query);
+        const tenantInfo = {
+            clinicId: req.clinicId || req.query.clinicId || null,
+            userId: req.userId,
+            role: req.role
+        };
+        const result = await prescriptionService.getAllPrescriptions(req.query, tenantInfo);
         res.status(200).json({
             success: true,
             data: result.prescriptions,

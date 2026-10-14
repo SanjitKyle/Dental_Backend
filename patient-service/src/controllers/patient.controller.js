@@ -4,8 +4,15 @@ export const createPatientProfile = async (req, res, next) => {
     try {
         const patientData = req.body;
         const created_by = req.userId;
+        const clinicId = req.clinicId || req.body.clinicId || null;
+        const clinicName = req.clinicName || req.body.clinicName || null;
 
-        const newPatient = await patientService.createProfile({ ...patientData, created_by });
+        const newPatient = await patientService.createProfile({ 
+            ...patientData, 
+            clinicId, 
+            clinicName, 
+            created_by 
+        });
         res.status(201).json({
             success: true,
             message: 'Patient profile created successfully',
@@ -19,7 +26,7 @@ export const createPatientProfile = async (req, res, next) => {
 export const getPatientProfile = async (req, res, next) => {
     try {
         const id = req.params.id;
-        const patient = await patientService.getProfile(id);
+        const patient = await patientService.getProfile(id, req.clinicId, req.role, req.userId);
         res.status(200).json({
             success: true,
             data: patient
@@ -34,7 +41,7 @@ export const updatePatientProfile = async (req, res, next) => {
         const id = req.params.id;
         const updateData = req.body;
 
-        const updatedPatient = await patientService.updateProfile(id, updateData);
+        const updatedPatient = await patientService.updateProfile(id, updateData, req.clinicId, req.role, req.userId);
         res.status(200).json({
             success: true,
             message: 'Profile updated successfully',
@@ -48,13 +55,22 @@ export const updatePatientProfile = async (req, res, next) => {
 export const getAllPatients = async (req, res, next) => {
     try {
         const userId = req.userId;
+        const role = req.role;
+        const clinicId = req.clinicId || req.query.clinicId || null;
+
         const page = Math.max(1, parseInt(req.query.page, 10) || 1);
         const limit = Math.max(1, parseInt(req.query.limit, 10) || 10);
         const offset = req.query.offset !== undefined
             ? Math.max(0, parseInt(req.query.offset, 10) || 0)
             : (page - 1) * limit;
 
-        const { patients, total } = await patientService.getAllProfiles({ userId, limit, skip: offset });
+        const { patients, total } = await patientService.getAllProfiles({ 
+            clinicId, 
+            userId, 
+            role, 
+            limit, 
+            skip: offset 
+        });
         res.status(200).json({
             success: true,
             data: patients,
@@ -76,7 +92,7 @@ export const getAllPatients = async (req, res, next) => {
 export const DeletePatients = async (req, res, next) => {
     try {
         const id = req.params.id;
-        await patientService.deletePatientById(id);
+        await patientService.deletePatientById(id, req.clinicId, req.role, req.userId);
         res.status(200).json({
             success: true,
             message: 'Successfully deleted patient'

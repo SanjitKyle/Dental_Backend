@@ -11,7 +11,10 @@ export const createDoctor = async (doctorData) => {
             name: doctorData.full_name,
             email: doctorData.email,
             password: doctorData.password || "doctor123",
-            role: 'doctor'
+            role: 'doctor',
+            clinicId: doctorData.clinicId || null,
+            clinicName: doctorData.clinicName || null,
+            phone: doctorData.phone || ''
         };
 
         const authResponse = await axios.post(`${authUrl}/register`, authPayload);

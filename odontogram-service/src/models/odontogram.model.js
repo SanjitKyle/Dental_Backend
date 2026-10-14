@@ -165,9 +165,19 @@ const OdontogramSchema = new mongoose.Schema({
     },
     lastUpdatedBy: {
         type: String
+    },
+    clinicId: {
+        type: String,
+        default: null,
+        index: true
+    },
+    clinicName: {
+        type: String,
+        default: null
     }
 }, { timestamps: true });
 
+OdontogramSchema.index({ clinicId: 1, createdAt: -1 });
 OdontogramSchema.index({ createdAt: -1 });
 OdontogramSchema.index({ status: 1, createdAt: -1 });
 OdontogramSchema.index({ doctorId: 1, createdAt: -1 });

@@ -69,11 +69,14 @@ const staffSchema = new mongoose.Schema({
         index:true
     },
     
-    // 6. Audit
-    createdBy: { type:String, index:true}
+    // 6. Audit & SaaS Multi-tenancy
+    createdBy: { type: String, index: true },
+    clinicId: { type: String, default: null, index: true },
+    clinicName: { type: String, default: null }
     
 }, { timestamps: true });
 
+staffSchema.index({ clinicId: 1, createdAt: -1 });
 staffSchema.index({ createdAt: -1 });
 staffSchema.index({ department: 1, status: 1 });
 const Staff = mongoose.model('Staff', staffSchema);

@@ -18,7 +18,9 @@ export const createPatient = async (patientData) => {
             name: full_name,
             email: cleanEmail,
             password: 'defaultPassword123',
-            role: 'patient'
+            role: 'patient',
+            clinicId: patientData.clinicId || null,
+            clinicName: patientData.clinicName || null
         });
 
         if (!response.data?.success && !response.data?.data) {
@@ -34,16 +36,31 @@ export const createPatient = async (patientData) => {
         throw new Error("Failed to create Auth account for Patient: " + (error.response?.data?.message || error.message));
     }
 
-    const finalPatientData = { ...patientData, email: cleanEmail, userId };
+    const finalPatientData = { 
+        ...patientData, 
+        email: cleanEmail, 
+        userId,
+        clinicId: patientData.clinicId || null,
+        clinicName: patientData.clinicName || null
+    };
     const patient = new Patient(finalPatientData);
     return await patient.save();
 };
 
-export const getPatientById = async (id) => {
-    return await Patient.findById(id);
+export const getPatientById = async (id, clinicId = null, role = null, userId = null) => {
+    const patient = await Patient.findById(id);
+    if (!patient) return null;
+    if (role === 'super_admin') return patient;
+    if (clinicId && patient.clinicId && patient.clinicId !== String(clinicId)) {
+        return null; // Tenant isolation: cannot access other clinic's patient
+    }
+    return patient;
 };
 
-export const updatePatient = async (id, updateData) => {
+export const updatePatient = async (id, updateData, clinicId = null, role = null, userId = null) => {
+    const existing = await getPatientById(id, clinicId, role, userId);
+    if (!existing) return null;
+
     return await Patient.findByIdAndUpdate(
         id,
         { $set: updateData },
@@ -51,25 +68,34 @@ export const updatePatient = async (id, updateData) => {
     );
 };
 
-export const getAllPatients = async ({ userId, limit, skip }) => {
+export const getAllPatients = async ({ clinicId, userId, role, limit, skip }) => {
     try {
-        const [patients, total] = await Promise.all([
-            Patient.find({ created_by: userId }).sort({ createdAt: -1 }).skip(skip).limit(limit),
-            Patient.countDocuments({ created_by: userId })
+        let filter = {};
+        if (role === 'super_admin') {
+            if (clinicId) filter = { clinicId: String(clinicId) };
+        } else if (clinicId) {
+            filter = { $or: [{ clinicId: String(clinicId) }, { created_by: String(userId) }] };
+        } else if (userId) {
+            filter = { created_by: String(userId) };
+        }
 
-        ])
-        return { patients, total }
+        const [patients, total] = await Promise.all([
+            Patient.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit),
+            Patient.countDocuments(filter)
+        ]);
+        return { patients, total };
     }
     catch (error) {
-        throw error
+        throw error;
     }
 };
-export const deletePatient = async (id) => {
-    try {
-        const res = await Patient.findByIdAndDelete(id);
-        return res;
 
+export const deletePatient = async (id, clinicId = null, role = null, userId = null) => {
+    try {
+        const existing = await getPatientById(id, clinicId, role, userId);
+        if (!existing) return null;
+        return await Patient.findByIdAndDelete(id);
     } catch (error) {
         throw error;
     }
-}
+};

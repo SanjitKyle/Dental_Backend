@@ -5,28 +5,28 @@ export const createProfile = async (data) => {
     return await patientRepository.createPatient(data);
 };
 
-export const getProfile = async (id) => {
-    const patient = await patientRepository.getPatientById(id);
+export const getProfile = async (id, clinicId = null, role = null, userId = null) => {
+    const patient = await patientRepository.getPatientById(id, clinicId, role, userId);
     if (!patient) {
         throw new AppError('Patient profile not found.', 404);
     }
     return patient;
 };
 
-export const updateProfile = async (id, data) => {
-    const patient = await patientRepository.updatePatient(id, data);
+export const updateProfile = async (id, data, clinicId = null, role = null, userId = null) => {
+    const patient = await patientRepository.updatePatient(id, data, clinicId, role, userId);
     if (!patient) {
         throw new AppError('Patient profile not found.', 404);
     }
     return patient;
 };
 
-export const getAllProfiles = async ({ userId, limit = 10, skip = 0 }) => {
-    return await patientRepository.getAllPatients({ userId, limit, skip });
+export const getAllProfiles = async ({ clinicId, userId, role, limit = 10, skip = 0 }) => {
+    return await patientRepository.getAllPatients({ clinicId, userId, role, limit, skip });
 };
 
-export const deletePatientById = async (id) => {
-    const response = await patientRepository.deletePatient(id);
+export const deletePatientById = async (id, clinicId = null, role = null, userId = null) => {
+    const response = await patientRepository.deletePatient(id, clinicId, role, userId);
     if (!response) {
         throw new AppError('Patient profile not found.', 404);
     }

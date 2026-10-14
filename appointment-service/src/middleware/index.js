@@ -19,6 +19,9 @@ export const Auth = async (req, res, next) => {
         const userId = decode?._id || decode?.id || decode?.userId;
         req.userId = userId;
         req.userRole = decode?.role;
+        req.role = decode?.role;
+        req.clinicId = decode?.clinicId || null;
+        req.clinicName = decode?.clinicName || null;
         next();
 
     } catch (error) {
