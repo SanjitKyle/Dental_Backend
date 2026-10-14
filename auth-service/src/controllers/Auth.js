@@ -96,18 +96,17 @@ export const RegisterClinic = async (req, res, next) => {
             return next(new AppError("An account with this email already exists", 409));
         }
 
-        // Call clinic-service over HTTP to initialize the clinic tenant record
+        // Step 1: Add into clinic first (creates Clinic document and generates clinicId)
         const clinicServiceUrl = process.env.CLINIC_SERVICE_URL || 'http://127.0.0.1:5012/api/clinics';
         let clinicRecord = null;
         try {
-            const clinicRes = await fetch(`${clinicServiceUrl}/register`, {
+            const clinicRes = await fetch(`${clinicServiceUrl}/tenant-only`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     clinicName: clinicName.trim(),
                     ownerName: ownerName.trim(),
                     ownerEmail: cleanEmail,
-                    password,
                     phone: String(phone).trim(),
                     city: city || '',
                     state: state || '',
@@ -122,24 +121,22 @@ export const RegisterClinic = async (req, res, next) => {
                 return next(new AppError(clinicJson.message || "Failed creating clinic record", clinicRes.status));
             }
         } catch (fetchErr) {
-            console.warn("[auth-service] clinic-service unreachable, fallback to local creation:", fetchErr.message);
+            console.error("[auth-service] clinic-service call failed:", fetchErr.message);
+            return next(new AppError("Could not reach clinic-service to create clinic record: " + fetchErr.message, 502));
         }
 
-        const clinicId = clinicRecord ? clinicRecord._id : null;
+        const clinicId = clinicRecord._id;
 
-        // Fetch or verify user created by clinic-service, or register if standalone
-        let user = await GetUserByEmail(cleanEmail);
-        if (!user) {
-            user = await RegisterNewUser({
-                name: ownerName.trim(),
-                email: cleanEmail,
-                password,
-                phone: String(phone).trim(),
-                role: 'clinic_admin',
-                clinicId: clinicId ? String(clinicId) : null,
-                clinicName: clinicName.trim()
-            });
-        }
+        // Step 2: Register user account in auth-service with the newly created clinicId
+        const user = await RegisterNewUser({
+            name: ownerName.trim(),
+            email: cleanEmail,
+            password,
+            phone: String(phone).trim(),
+            role: 'clinic_admin',
+            clinicId: String(clinicId),
+            clinicName: clinicName.trim()
+        });
 
         // Auto-login and issue JWT
         const token = await generateToken({

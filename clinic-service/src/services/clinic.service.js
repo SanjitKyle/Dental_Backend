@@ -7,6 +7,49 @@ dotenv.config();
 const AUTH_SERVICE_URL = process.env.AUTH_SERVICE_URL || 'http://127.0.0.1:5001/api/auth';
 
 /**
+ * Create Clinic Tenant Only (Used by auth-service or direct creation)
+ * First step of onboarding: stores the clinic and generates the clinicId (_id).
+ */
+export const createClinicTenantOnly = async (payload) => {
+  const {
+    clinicName,
+    ownerName,
+    ownerEmail,
+    phone,
+    city,
+    state,
+    address,
+  } = payload;
+
+  if (!clinicName || !ownerName || !ownerEmail) {
+    throw new AppError('Clinic name, owner name, and email are required', 400);
+  }
+
+  const cleanEmail = ownerEmail.toLowerCase().trim();
+  const existingClinic = await clinicRepo.findClinicByEmail(cleanEmail);
+  if (existingClinic) {
+    throw new AppError('A clinic is already registered under this email address', 409);
+  }
+
+  return await clinicRepo.createClinic({
+    name: clinicName.trim(),
+    ownerName: ownerName.trim(),
+    ownerEmail: cleanEmail,
+    phone: String(phone || '').trim(),
+    address: {
+      street: address || '',
+      city: city || '',
+      state: state || '',
+    },
+    subscription: {
+      plan: 'TRIAL',
+      status: 'ACTIVE',
+      trialEndsAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), // 14-day free trial
+    },
+  });
+};
+
+/**
  * Register a new Dental Clinic:
  * 1. Verifies ownerEmail doesn't already own a clinic.
  * 2. Creates the Clinic document in clinic-service.

@@ -38,6 +38,7 @@ const router = express.Router();
  *         description: Clinic successfully created with 14-day trial
  */
 router.post('/register', clinicController.registerClinic);
+router.post('/tenant-only', clinicController.createTenantOnly);
 
 /**
  * @swagger

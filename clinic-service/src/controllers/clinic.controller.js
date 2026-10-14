@@ -1,5 +1,18 @@
 import * as clinicService from '../services/clinic.service.js';
 
+export const createTenantOnly = async (req, res, next) => {
+  try {
+    const clinic = await clinicService.createClinicTenantOnly(req.body);
+    res.status(201).json({
+      success: true,
+      message: 'Clinic tenant record created successfully',
+      data: clinic
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 export const registerClinic = async (req, res, next) => {
   try {
     const clinic = await clinicService.registerNewClinic(req.body);
