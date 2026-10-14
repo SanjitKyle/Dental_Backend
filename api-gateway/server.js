@@ -219,7 +219,15 @@ app.use(createProxyMiddleware({
     changeOrigin: true
 }));
 
+// Route to Clinic Service (Multi-Tenancy & SaaS Management)
+app.use(createProxyMiddleware({
+    pathFilter: '/api/clinics',
+    target: process.env.CLINIC_SERVICE_URL || 'http://127.0.0.1:5012',
+    changeOrigin: true
+}));
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log('api gateway is running on port ' + PORT);
 });
+

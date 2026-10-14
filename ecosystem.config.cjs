@@ -14,9 +14,11 @@ module.exports = {
         ENQUIRY_SERVICE_URL: "http://127.0.0.1:5007",
         STAFF_SERVICE_URL: "http://127.0.0.1:5008",
         INVOICE_SERVICE_URL: "http://127.0.0.1:5010",
-        QUEUE_SERVICE_URL: "http://127.0.0.1:5011"
+        QUEUE_SERVICE_URL: "http://127.0.0.1:5011",
+        CLINIC_SERVICE_URL: "http://127.0.0.1:5012"
       }
     },
+
 
     {
       name: "auth-service",
@@ -132,7 +134,18 @@ module.exports = {
         AUTH_SERVICE_URL: "http://127.0.0.1:5001/api/auth",
         PATIENT_SERVICE_URL: "http://127.0.0.1:5002/api/patients"
       }
+    },
+    {
+      name: "clinic-service",
+      script: "./clinic-service/src/server.js",
+      env: {
+        PORT: 5012,
+        MONGO_URI: "mongodb+srv://kylefront74_db_user:ZkVygiRH8VLigqmr@cluster0.o0leu0w.mongodb.net/dental_clinics?retryWrites=true&w=majority&appName=Cluster0",
+        JWT_SECRET: "HOSPITAL_MAN",
+        AUTH_SERVICE_URL: "http://127.0.0.1:5001/api/auth"
+      }
     }
   ]
 };
+
 

@@ -13,10 +13,13 @@ const userSchema=new mongoose.Schema({
     password:{
         type:String,
     },
+    phone: {
+        type: String,
+        default: ''
+    },
     isVerified:{
         type:Boolean,
         default:false
-
     },
     isActive:{
         type:Boolean,
@@ -28,9 +31,20 @@ const userSchema=new mongoose.Schema({
     },
     role:{
         type:String,
-        enum:['admin','doctor','patient','staff'],
+        enum:['super_admin', 'clinic_admin', 'admin', 'doctor', 'patient', 'staff', 'receptionist'],
+        default: 'clinic_admin'
+    },
+    clinicId: {
+        type: String,
+        default: null,
+        index: true
+    },
+    clinicName: {
+        type: String,
+        default: ''
     }
 },{timestamps:true});
+
 
 userSchema.pre("save", async function () {
     if (!this.isModified("password")) {

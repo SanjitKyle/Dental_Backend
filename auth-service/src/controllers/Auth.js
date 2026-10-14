@@ -5,7 +5,7 @@ import AppError from "../utils/AppError.js";
 
 export const RegisterUser = async (req, res, next) => {
     try {
-        const { name, email, password, role } = req.body;
+        const { name, email, password, role, clinicId, clinicName, phone } = req.body;
 
         if (!email || !password) {
             return next(new AppError("Email and password are required", 400));
@@ -16,12 +16,13 @@ export const RegisterUser = async (req, res, next) => {
             return next(new AppError("User already exists with this email", 409));
         }
 
-        const newUser = await RegisterNewUser({ name, email, password, role });
+        const newUser = await RegisterNewUser({ name, email, password, role, clinicId, clinicName, phone });
         res.status(201).json({
             success: true,
             message: "User registered successfully",
             data: newUser
         });
+
     } catch (err) {
         next(err);
     }
@@ -45,10 +46,16 @@ export const LoginUser = async (req, res, next) => {
             return next(new AppError("Invalid email or password", 401));
         }
 
+        existingUser.lastLogin = new Date();
+        await existingUser.save();
+
         const token = await generateToken({
             _id: existingUser._id,
             email: existingUser.email,
-            role: existingUser.role
+            role: existingUser.role,
+            clinicId: existingUser.clinicId || null,
+            clinicName: existingUser.clinicName || null,
+            name: existingUser.name
         });
 
         res.status(200).json({
@@ -56,7 +63,14 @@ export const LoginUser = async (req, res, next) => {
             message: "User logged in successfully",
             data: {
                 token,
-                user: existingUser
+                user: {
+                    _id: existingUser._id,
+                    name: existingUser.name,
+                    email: existingUser.email,
+                    role: existingUser.role,
+                    clinicId: existingUser.clinicId || null,
+                    clinicName: existingUser.clinicName || null
+                }
             }
         });
     } catch (err) {
