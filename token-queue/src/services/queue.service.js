@@ -8,7 +8,7 @@ import AppError from '../utils/AppError.js';
  * - If patientId is NOT provided -> Calls patient-service via HTTP (POST /api/patients)
  *   to create the patient, receives patient._id, and assigns it to the token.
  */
-export const issueToken = async (payload, issuedByUserId, authToken = null) => {
+export const issueToken = async (payload, issuedByUserId, authToken = null, clinicId = null, clinicName = null) => {
   const {
     patientId,
     patientName,
@@ -92,7 +92,7 @@ export const issueToken = async (payload, issuedByUserId, authToken = null) => {
 
   // 2. Generate Daily Sequence Token Number
   const today = new Date().toISOString().split('T')[0];
-  const todaysCount = await queueRepo.countTokensForDateAndDoctor(today, doctorId);
+  const todaysCount = await queueRepo.countTokensForDateAndDoctor(today, doctorId, clinicId);
   const nextTokenNumber = todaysCount + 1;
 
   const prefix = priority.toUpperCase() === 'EMERGENCY' ? 'EM' : priority.toUpperCase() === 'URGENT' ? 'UR' : 'T';
@@ -100,6 +100,8 @@ export const issueToken = async (payload, issuedByUserId, authToken = null) => {
 
   // 3. Save Queue Token in Database
   const tokenRecord = await queueRepo.createToken({
+    clinicId: clinicId ? String(clinicId) : null,
+    clinicName: clinicName || '',
     tokenNumber: nextTokenNumber,
     tokenCode,
     queueDate: today,
@@ -120,14 +122,20 @@ export const issueToken = async (payload, issuedByUserId, authToken = null) => {
 /**
  * Get active live queue for doctor / chair
  */
-export const getLiveQueue = async ({ doctorId, date }) => {
+export const getLiveQueue = async ({ doctorId, date, clinicId, userRole }) => {
   const queueDate = date || new Date().toISOString().split('T')[0];
   const statusList = ['WAITING', 'IN_CONSULTATION'];
+
+  let resolvedClinicId = clinicId ? String(clinicId) : null;
+  if (!resolvedClinicId && userRole !== 'super_admin') {
+    resolvedClinicId = '__unauthorized_no_clinic__';
+  }
 
   return await queueRepo.getLiveQueue({
     queueDate,
     doctorId,
     statusList,
+    clinicId: resolvedClinicId,
   });
 };
 
@@ -159,12 +167,18 @@ export const changeTokenStatus = async (tokenId, newStatus) => {
 /**
  * List tokens with pagination and filters
  */
-export const getTokens = async ({ page = 1, limit = 20, doctorId, status, date }) => {
+export const getTokens = async ({ page = 1, limit = 20, doctorId, status, date, clinicId, userRole }) => {
   const pageNum = Math.max(1, parseInt(page, 10) || 1);
   const limitNum = Math.max(1, parseInt(limit, 10) || 20);
   const skip = (pageNum - 1) * limitNum;
 
   const query = {};
+  if (userRole !== 'super_admin') {
+    query.clinicId = clinicId ? String(clinicId) : '__unauthorized_no_clinic__';
+  } else if (clinicId) {
+    query.clinicId = String(clinicId);
+  }
+
   if (date) query.queueDate = date;
   if (doctorId) query.doctorId = doctorId;
   if (status && status !== 'ALL') query.status = status;

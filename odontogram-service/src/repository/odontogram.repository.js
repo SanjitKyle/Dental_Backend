@@ -12,8 +12,10 @@ export const findAll = async ({ filter = {}, skip = 0, limit = 10, sort = { crea
     return { odontograms, total };
 };
 
-export const findByPatientId = async (patientId, status = 'active') => {
-    return await Odontogram.findOne({ patientId, status });
+export const findByPatientId = async (patientId, status = 'active', clinicId = null) => {
+    const q = { patientId, status };
+    if (clinicId) q.clinicId = String(clinicId);
+    return await Odontogram.findOne(q);
 };
 
 export const findById = async (id) => {

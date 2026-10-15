@@ -1,7 +1,9 @@
 import QueueToken from '../models/QueueToken.model.js';
 
-export const countTokensForDateAndDoctor = async (queueDate, doctorId) => {
-  return await QueueToken.countDocuments({ queueDate, doctorId });
+export const countTokensForDateAndDoctor = async (queueDate, doctorId, clinicId) => {
+  const query = { queueDate, doctorId };
+  if (clinicId) query.clinicId = String(clinicId);
+  return await QueueToken.countDocuments(query);
 };
 
 export const createToken = async (tokenData) => {
@@ -21,9 +23,10 @@ export const updateTokenStatus = async (tokenId, updateFields) => {
   ).lean();
 };
 
-export const getLiveQueue = async ({ queueDate, doctorId, statusList }) => {
+export const getLiveQueue = async ({ queueDate, doctorId, statusList, clinicId }) => {
   const query = { queueDate };
   if (doctorId) query.doctorId = doctorId;
+  if (clinicId) query.clinicId = String(clinicId);
   if (statusList && statusList.length > 0) {
     query.status = { $in: statusList };
   }

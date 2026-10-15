@@ -41,6 +41,8 @@ export const getEnquiries = async (query = {}) => {
         startDate,
         endDate,
         assignedTo,
+        clinicId,
+        role,
         page = 1,
         limit = 50,
         sortBy = 'createdAt',
@@ -48,6 +50,14 @@ export const getEnquiries = async (query = {}) => {
     } = query;
 
     const filters = {};
+
+    if (role === 'super_admin') {
+        if (clinicId) filters.clinicId = String(clinicId);
+    } else if (clinicId) {
+        filters.clinicId = String(clinicId);
+    } else {
+        filters.clinicId = '__unauthorized_no_clinic__';
+    }
 
     if (status) {
         filters.status = status;

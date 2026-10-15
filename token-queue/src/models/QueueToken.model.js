@@ -93,6 +93,15 @@ const QueueTokenSchema = new mongoose.Schema(
     issuedBy: {
       type: String, // User ID who generated token
     },
+    clinicId: {
+      type: String,
+      default: null,
+      index: true,
+    },
+    clinicName: {
+      type: String,
+      default: null,
+    },
   },
   {
     timestamps: true,

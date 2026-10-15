@@ -58,13 +58,11 @@ export const getAllPrescriptions = async (query = {}, tenantInfo = {}) => {
     if (appointmentId) filter.appointmentId = appointmentId;
 
     if (role === 'super_admin') {
-        if (clinicId) filter.clinicId = clinicId;
+        if (clinicId) filter.clinicId = String(clinicId);
     } else if (clinicId) {
-        filter.$or = [
-            { clinicId: String(clinicId) },
-            { createdBy: String(userId) },
-            { clinicId: null }
-        ];
+        filter.clinicId = String(clinicId);
+    } else {
+        filter.clinicId = '__unauthorized_no_clinic__';
     }
 
     if (search) {

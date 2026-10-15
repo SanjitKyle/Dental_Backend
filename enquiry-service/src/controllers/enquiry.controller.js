@@ -2,7 +2,9 @@ import * as enquiryService from '../services/enquiry.service.js';
 
 export const createEnquiry = async (req, res, next) => {
     try {
-        const enquiry = await enquiryService.createEnquiry(req.body);
+        const clinicId = req.clinicId || req.body.clinicId || null;
+        const clinicName = req.clinicName || req.body.clinicName || null;
+        const enquiry = await enquiryService.createEnquiry({ ...req.body, clinicId, clinicName });
         res.status(201).json({
             success: true,
             message: 'Enquiry submitted successfully',
@@ -15,7 +17,9 @@ export const createEnquiry = async (req, res, next) => {
 
 export const getEnquiries = async (req, res, next) => {
     try {
-        const result = await enquiryService.getEnquiries(req.query);
+        const clinicId = req.clinicId || req.query.clinicId || null;
+        const role = req.userRole || req.role || null;
+        const result = await enquiryService.getEnquiries({ ...req.query, clinicId, role });
         res.status(200).json({
             success: true,
             data: result.enquiries,

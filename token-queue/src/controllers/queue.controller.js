@@ -3,7 +3,13 @@ import * as queueService from '../services/queue.service.js';
 export const issueToken = async (req, res, next) => {
   try {
     const authToken = req.headers.authorization;
-    const token = await queueService.issueToken(req.body, req.userId, authToken);
+    const token = await queueService.issueToken(
+      req.body,
+      req.userId,
+      authToken,
+      req.clinicId,
+      req.clinicName
+    );
     res.status(201).json({
       success: true,
       message: 'Queue token issued successfully',
@@ -19,7 +25,12 @@ export const getLiveQueue = async (req, res, next) => {
     const { doctorId } = req.params;
     const { date } = req.query;
 
-    const queue = await queueService.getLiveQueue({ doctorId, date });
+    const queue = await queueService.getLiveQueue({
+      doctorId,
+      date,
+      clinicId: req.clinicId,
+      userRole: req.userRole,
+    });
     res.status(200).json({
       success: true,
       count: queue.length,
@@ -56,6 +67,8 @@ export const listTokens = async (req, res, next) => {
       doctorId,
       status,
       date,
+      clinicId: req.clinicId,
+      userRole: req.userRole,
     });
 
     res.status(200).json({

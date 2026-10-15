@@ -60,13 +60,11 @@ export const getAllOdontograms = async (query = {}, tenantInfo = {}) => {
     if (patientId) filter.patientId = patientId;
 
     if (role === 'super_admin') {
-        if (clinicId) filter.clinicId = clinicId;
+        if (clinicId) filter.clinicId = String(clinicId);
     } else if (clinicId) {
-        filter.$or = [
-            { clinicId: String(clinicId) },
-            { createdBy: String(userId) },
-            { clinicId: null }
-        ];
+        filter.clinicId = String(clinicId);
+    } else {
+        filter.clinicId = '__unauthorized_no_clinic__';
     }
 
     const parsedPage = Math.max(1, parseInt(page, 10) || 1);
@@ -104,7 +102,7 @@ export const getAllOdontograms = async (query = {}, tenantInfo = {}) => {
 export const getOrCreatePatientOdontogram = async (patientId, options = {}) => {
     const { dentitionType = 'permanent', doctorId, userId, clinicId, clinicName } = options;
 
-    let odontogram = await odontogramRepo.findByPatientId(patientId);
+    let odontogram = await odontogramRepo.findByPatientId(patientId, 'active', clinicId);
     if (!odontogram) {
         const defaultTeeth = buildDefaultTeeth(dentitionType);
         const initialData = {

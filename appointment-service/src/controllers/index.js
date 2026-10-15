@@ -31,18 +31,13 @@ export const getAppointments = async (req, res, next) => {
         const limit = Math.max(1, parseInt(rawLimit, 10) || 500);
         const offset = rawOffset !== undefined ? Math.max(0, parseInt(rawOffset, 10) || 0) : (page - 1) * limit;
 
-        let query = {};
+        let query = { ...filterQuery };
         if (userRole === 'super_admin') {
-            query = clinicId ? { clinicId, ...filterQuery } : { ...filterQuery };
+            if (clinicId) query.clinicId = String(clinicId);
         } else if (clinicId) {
-            query = {
-                $and: [
-                    { $or: [{ clinicId: String(clinicId) }, { created_by: String(userId) }] },
-                    filterQuery
-                ]
-            };
+            query.clinicId = String(clinicId);
         } else {
-            query = { created_by: userId, ...filterQuery };
+            query.clinicId = '__unauthorized_no_clinic__';
         }
 
         const { appointments, total } = await AppointmentService.getAppointments({

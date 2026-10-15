@@ -28,14 +28,11 @@ export const getAllDoctors = async (req, res, next) => {
         const clinicId = req.clinicId || req.query.clinicId || null;
         let query = { ...filterQuery };
         if (req.role === 'super_admin') {
-            if (clinicId) query.clinicId = clinicId;
+            if (clinicId) query.clinicId = String(clinicId);
         } else if (clinicId) {
-            query = {
-                $and: [
-                    { $or: [{ clinicId: String(clinicId) }, { clinicId: null }, { clinicId: { $exists: false } }] },
-                    filterQuery
-                ]
-            };
+            query.clinicId = String(clinicId);
+        } else {
+            query.clinicId = '__unauthorized_no_clinic__';
         }
 
         const { doctors, total } = await DoctorService.getAllDoctors({ query, limit, skip: offset });
@@ -61,6 +58,11 @@ export const getAllDoctors = async (req, res, next) => {
 export const getDoctorById = async (req, res, next) => {
     try {
         const doctor = await DoctorService.getDoctorById(req.params.id);
+        if (doctor && req.clinicId && req.role !== 'super_admin') {
+            if (doctor.clinicId && String(doctor.clinicId) !== String(req.clinicId)) {
+                return res.status(403).json({ success: false, message: "Access denied to doctor from another clinic" });
+            }
+        }
         res.status(200).json({ success: true, data: doctor });
     } catch (err) {
         next(err);

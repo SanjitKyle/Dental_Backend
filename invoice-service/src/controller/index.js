@@ -53,13 +53,11 @@ export const getAllInvoices = async (req, res, next) => {
         // Multi-tenant SaaS isolation
         const clinicId = req.clinicId || req.query.clinicId || null;
         if (req.role === 'super_admin') {
-            if (clinicId) query.clinicId = clinicId;
+            if (clinicId) query.clinicId = String(clinicId);
         } else if (clinicId) {
-            query.$or = [
-                { clinicId: String(clinicId) },
-                { createdBy: String(req.userId) },
-                { clinicId: null }
-            ];
+            query.clinicId = String(clinicId);
+        } else {
+            query.clinicId = '__unauthorized_no_clinic__';
         }
 
         // Date range query

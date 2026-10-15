@@ -18,6 +18,8 @@ export const authMiddleware = async (req, res, next) => {
 
         req.userId = decoded?._id || decoded?.id || decoded?.userId;
         req.userRole = decoded?.role;
+        req.clinicId = decoded?.clinicId || null;
+        req.clinicName = decoded?.clinicName || null;
         next();
     } catch (error) {
         return res.status(403).json({

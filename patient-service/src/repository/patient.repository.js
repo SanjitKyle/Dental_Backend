@@ -74,9 +74,9 @@ export const getAllPatients = async ({ clinicId, userId, role, limit, skip }) =>
         if (role === 'super_admin') {
             if (clinicId) filter = { clinicId: String(clinicId) };
         } else if (clinicId) {
-            filter = { $or: [{ clinicId: String(clinicId) }, { created_by: String(userId) }] };
-        } else if (userId) {
-            filter = { created_by: String(userId) };
+            filter = { clinicId: String(clinicId) };
+        } else {
+            filter = { clinicId: '__unauthorized_no_clinic__' };
         }
 
         const [patients, total] = await Promise.all([

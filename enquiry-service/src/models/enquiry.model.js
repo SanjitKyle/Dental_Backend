@@ -99,6 +99,15 @@ const EnquirySchema = new mongoose.Schema({
     },
     internal_notes:{
         type:String
+    },
+    clinicId: {
+        type: String,
+        default: null,
+        index: true
+    },
+    clinicName: {
+        type: String,
+        default: null
     }
 }, {
     timestamps: true
